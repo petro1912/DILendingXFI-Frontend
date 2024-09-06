@@ -3,7 +3,7 @@ const DefaultPalette = (mode, skin) => {
   const whiteColor = '#FFF'
   const lightColor = '47, 43, 61'
   const darkColor = '255, 255, 255'
-  const darkPaperBgColor = '#2F3349'
+  const darkPaperBgColor = '#121212EE'
   const mainColor = mode === 'light' ? lightColor : darkColor
 
   const defaultBgColor = () => {
@@ -58,9 +58,9 @@ const DefaultPalette = (mode, skin) => {
       contrastText: whiteColor
     },
     info: {
-      light: '#1FD5EB',
-      main: '#00CFE8',
-      dark: '#00B6CC',
+      light: '#7367F0',
+      main: '#7367F0',
+      dark: '#7367F0',
       contrastText: whiteColor
     },
     success: {

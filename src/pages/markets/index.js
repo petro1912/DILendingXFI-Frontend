@@ -11,6 +11,7 @@ import TableCell from '@mui/material/TableCell'
 import CircularProgress from '@mui/material/CircularProgress'
 import { useRouter } from 'next/router';
 import { styled } from '@mui/material/styles'
+import FooterIllustrations from "src/views/pages/misc/FooterIllustrations"
 
 const rows = [{
   supplyToken: 'usdt',
@@ -123,9 +124,9 @@ const Markets = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map(row => (
+                {rows.map((row, index) => (
                     <TableRow
-                      key={row.name}
+                      key={index}
                       hover
                       style={{ cursor: 'pointer' }}
                       sx={{
@@ -135,7 +136,7 @@ const Markets = () => {
                       }}
                       onClick={() => enterMarket(row.supplyToken, row.collateralToken)}
                     >
-                      <Cell component='th' scope='row'>
+                      <Cell scope='row'>
                         <Box sx={{display: 'flex', alignItems: 'center'}}>
                           <img src={`/images/tokens/${row.supplyToken}.png`} className="tokenImg"/>
                           <img src={`/images/tokens/${row.collateralToken}.png`} className="tokenImg"/>
@@ -176,6 +177,7 @@ const Markets = () => {
           </CardContent>
         </Card>
       </BoxContainer>
+      <FooterIllustrations />
     </>
   )
 }

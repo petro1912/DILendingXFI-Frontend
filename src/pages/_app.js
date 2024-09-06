@@ -2,10 +2,6 @@
 import Head from 'next/head'
 import { Router } from 'next/router'
 
-
-
-
-
 // ** Loader Import
 import NProgress from 'nprogress'
 
@@ -27,12 +23,11 @@ import { Toaster } from 'react-hot-toast'
 import UserLayout from 'src/layouts/UserLayout'
 import ThemeComponent from 'src/@core/theme/ThemeComponent'
 
-// ** Spinner Import
-import Spinner from 'src/@core/components/spinner'
-
 // ** Contexts
-import { AuthProvider } from 'src/context/AuthContext'
 import { SettingsConsumer, SettingsProvider } from 'src/@core/context/settingsContext'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { WagmiProvider } from 'wagmi'
+import {config} from "src/wallet/config"
 
 // ** Styled Components
 import ReactHotToast from 'src/@core/styles/libs/react-hot-toast'
@@ -79,34 +74,37 @@ const App = props => {
     Component.getLayout ?? (page => <UserLayout contentHeightFixed={contentHeightFixed}>{page}</UserLayout>)
   const setConfig = Component.setConfig ?? undefined
 
+  const queryClient = new QueryClient()
+
   return (
-
       <CacheProvider value={emotionCache}>
-        <Head>
-          <title>{`${themeConfig.appName} - Material Design React Admin Template`}</title>
-          <meta
-            name='description'
-            content={`${themeConfig.appName} – Material Design React Admin Dashboard Template – is the most developer friendly & highly customizable Admin Dashboard Template based on MUI v5.`}
-          />
-          <meta name='keywords' content='Material Design, MUI, Admin Template, React Admin Template' />
-          <meta name='viewport' content='initial-scale=1, width=device-width' />
-        </Head>
-
-
-          <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
-            <SettingsConsumer>
-              {({ settings }) => {
-                return (
-                  <ThemeComponent settings={settings}>
-                    {getLayout(<Component {...pageProps} />)}
-                    <ReactHotToast>
-                      <Toaster position={settings.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />
-                    </ReactHotToast>
-                  </ThemeComponent>
-                )
-              }}
-            </SettingsConsumer>
-          </SettingsProvider>
+        <WagmiProvider config={config}>
+          <QueryClientProvider client={queryClient}>
+            <Head>
+              <title>{`${themeConfig.appName} - Material Design React Admin Template`}</title>
+              <meta
+                name='description'
+                content={`${themeConfig.appName} – Material Design React Admin Dashboard Template – is the most developer friendly & highly customizable Admin Dashboard Template based on MUI v5.`}
+              />
+              <meta name='keywords' content='Material Design, MUI, Admin Template, React Admin Template' />
+              <meta name='viewport' content='initial-scale=1, width=device-width' />
+            </Head>
+            <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
+              <SettingsConsumer>
+                {({ settings }) => {
+                  return (
+                    <ThemeComponent settings={settings}>
+                      {getLayout(<Component {...pageProps} />)}
+                      <ReactHotToast>
+                        <Toaster position={settings.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />
+                      </ReactHotToast>
+                    </ThemeComponent>
+                  )
+                }}
+              </SettingsConsumer>
+            </SettingsProvider>
+          </QueryClientProvider>
+        </WagmiProvider>
 
       </CacheProvider>
 

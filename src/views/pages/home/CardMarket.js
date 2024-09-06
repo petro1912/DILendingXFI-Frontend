@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography'
 
 const CardMarket = (props) => {
   return (
-    <Card sx={{ boxShadow: 4, borderRadius: 4, p: 2, color: 'common.white', backgroundColor: '#00CFF822' }}>
+    <Card sx={{ boxShadow: 4, borderRadius: 3, p: 2, color: 'common.white', backgroundColor: '#00CFF822' }}>
       <CardContent sx={{ p: theme => `${theme.spacing(3.25, 5, 4.5)} !important` }}>
         <Typography
           variant='h5'

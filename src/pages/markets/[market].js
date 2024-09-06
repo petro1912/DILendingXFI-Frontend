@@ -7,7 +7,7 @@ import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography';
 
 import { styled } from '@mui/material/styles'
-import { Icon } from '@mui/material'
+import Icon from 'src/@core/components/icon'
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Table from '@mui/material/Table'
@@ -34,9 +34,8 @@ const MarketPage = () => {
   const router = useRouter();
   const { market } = router.query;
 
-  if (!market) return null; // Ensure `slug` is available before processing
+  if (!market) return null;
 
-  // Split slug into varA and varB
   const [supplyToken, collateralToken] = market.split('-');
 
   return (
@@ -46,8 +45,8 @@ const MarketPage = () => {
             mt: "92px",
             mb: 6
           }}>
-          <LinkStyled href='/markets'>
-            <Icon icon="tabler:settings" /> Markets
+          <LinkStyled href='/markets' sx={{display: 'flex', alignItems: 'center'}}>
+            <Icon icon="tabler:arrow-left" /> <span>Markets</span>
           </LinkStyled>
           <Typography
             variant='h2'
@@ -143,27 +142,29 @@ const MarketPage = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                <Cell component='th' scope='row'>
-                  WBTC
-                </Cell>
-                <Cell align='right'>
-                  $414.76M
-                </Cell>
-                <Cell align='right'>
-                  $21.61
-                </Cell>
-                <Cell align='right'>
-                  $57,200.18
-                </Cell>
-                <Cell align='right'>
-                  80%
-                </Cell>
-                <Cell align='right'>
-                  85%
-                </Cell>
-                <Cell align='right'>
-                  5%
-                </Cell>
+                <TableRow>
+                  <Cell scope='row'>
+                    WBTC
+                  </Cell>
+                  <Cell align='right'>
+                    $414.76M
+                  </Cell>
+                  <Cell align='right'>
+                    $21.61
+                  </Cell>
+                  <Cell align='right'>
+                    $57,200.18
+                  </Cell>
+                  <Cell align='right'>
+                    80%
+                  </Cell>
+                  <Cell align='right'>
+                    85%
+                  </Cell>
+                  <Cell align='right'>
+                    5%
+                  </Cell>
+                </TableRow>
               </TableBody>
             </Table>
             </CardContent>

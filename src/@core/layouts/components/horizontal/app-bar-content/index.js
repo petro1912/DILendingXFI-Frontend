@@ -10,6 +10,8 @@ import Button from '@mui/material/Button'
 // ** Theme Config Import
 import themeConfig from 'src/configs/themeConfig'
 import UserDropdown from 'src/@core/layouts/components/shared-components/UserDropdown'
+import ConnectWallet from 'src/views/pages/home/ConnectWallet'
+import { useState } from 'react'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   display: 'flex',
@@ -24,6 +26,9 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 }))
 
 const AppBarContent = props => {
+
+  const [account, setAccount] = useState(null);
+
 
   return (
     <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -44,6 +49,13 @@ const AppBarContent = props => {
           Markets
         </Typography>
         <Typography
+          sx={{mr: 6}}
+          component={LinkStyled}
+          href='/governance'
+        >
+          Governance
+        </Typography>
+        <Typography
           target='_blank'
           sx={{mr: 6}}
           component={LinkStyled}
@@ -52,15 +64,12 @@ const AppBarContent = props => {
           Documentation
         </Typography>
         <Typography
-          target='_blank'
           sx={{mr: 26}}
           component={LinkStyled}
-          href='https://pixinvent.ticksy.com'>
-          Support
+          href='/app'>
+          App
         </Typography>
-        <Button variant='outlined'>
-          Connect Wallet
-        </Button>
+        <ConnectWallet account={account} setAccount={setAccount}/>
         {false && <UserDropdown settings={props.settings} /> }
       </Box>
 
