@@ -32,68 +32,73 @@ const CustomCloseButton = styled(IconButton)(({ theme }) => ({
 }))
 
 const ConnectWallet = () => {
+  const [isClient, setIsClient] = useState(false)
 
-    const [anchorEl, setAnchorEl] = useState(null)
-    const [openModal, setOpenModal] = useState(false)
-    const { address, isConnected } = useAccount()
-    const { connect, connectors } = useConnect()
-    const { disconnect } = useDisconnect()
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [openModal, setOpenModal] = useState(false)
+  const { address, isConnected } = useAccount()
+  const { connect, connectors } = useConnect()
+  const { disconnect } = useDisconnect()
 
-    const handleClick = event => {
-      setAnchorEl(event.currentTarget)
-    }
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
-    const handleClose = () => {
-      setAnchorEl(null)
-    }
-
-    const handleConnectDialogOpen = () => setOpenModal(true)
-    const handleConnectDialogClose = () => setOpenModal(false)
-
-    const selectWalletOption = (connector) => {
-      handleConnectDialogClose()
-      connect({ connector })
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget)
   }
 
-  if (isConnected) {
-        return (
-            <div>
-                <Button variant='outlined' aria-controls='simple-menu' aria-haspopup='true' onClick={handleClick}>
-                  { truncateAddress(address) }
-                </Button>
-                <Menu keepMounted id='simple-menu' anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
-                  <MenuItem onClick={handleClose}>Profile</MenuItem>
-                  <MenuItem onClick={() => disconnect()}>Disconnect</MenuItem>
-                </Menu>
-            </div>
-        );
-    }
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
+  const handleConnectDialogOpen = () => setOpenModal(true)
+  const handleConnectDialogClose = () => setOpenModal(false)
+
+  const selectWalletOption = (connector) => {
+    handleConnectDialogClose()
+    connect({ connector })
+  }
+
+  if (isConnected && isClient) {
     return (
-        <>
-          <Dialog
-            onClose={handleConnectDialogClose}
-            aria-labelledby='connect-dialog'
-            open={openModal}
-            sx={{ '& .MuiDialog-paper': { width: '600px', maxWidth: 'none', border: '1px solid #00CFE8', overflow: 'visible' }}}>
-            <DialogTitle variant='h3' color="primary" id='connect-dialog'>Connect Wallet</DialogTitle>
-            <CustomCloseButton aria-label='close' onClick={handleConnectDialogClose}>
-              <Icon icon='tabler:x' fontSize='1.25rem' />
-            </CustomCloseButton>
-            <Box sx={{p: 8}}>
-              {connectors.map((connector) => (
-                <WalletOption
-                    key={connector.uid}
-                    connector={connector}
-                    onClick={() => selectWalletOption( connector )}
-                />
-              ))}
-            </Box>
-          </Dialog>
-          <Button variant="outlined" onClick={() => handleConnectDialogOpen()}>
-            Connect Wallet
-          </Button>
-        </>
+      <div>
+        <Button variant='outlined' aria-controls='simple-menu' aria-haspopup='true' onClick={handleClick}>
+          {truncateAddress(address)}
+        </Button>
+        <Menu keepMounted id='simple-menu' anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
+          <MenuItem onClick={handleClose}>Profile</MenuItem>
+          <MenuItem onClick={() => disconnect()}>Disconnect</MenuItem>
+        </Menu>
+      </div>
     );
+  }
+  return (
+    <>
+      <Dialog
+        onClose={handleConnectDialogClose}
+        aria-labelledby='connect-dialog'
+        open={openModal}
+        sx={{ '& .MuiDialog-paper': { width: '600px', maxWidth: 'none', border: '1px solid #00CFE8', overflow: 'visible' } }}>
+        <DialogTitle variant='h3' color="primary" id='connect-dialog'>Connect Wallet</DialogTitle>
+        <CustomCloseButton aria-label='close' onClick={handleConnectDialogClose}>
+          <Icon icon='tabler:x' fontSize='1.25rem' />
+        </CustomCloseButton>
+        <Box sx={{ p: 8 }}>
+          {connectors.map((connector) => (
+            <WalletOption
+              key={connector.uid}
+              connector={connector}
+              onClick={() => selectWalletOption(connector)}
+            />
+          ))}
+        </Box>
+      </Dialog>
+      <Button variant="outlined" onClick={() => handleConnectDialogOpen()}>
+        Connect Wallet
+      </Button>
+    </>
+  );
 }
 
 export default ConnectWallet;

@@ -27,6 +27,7 @@ import ThemeComponent from 'src/@core/theme/ThemeComponent'
 import { SettingsConsumer, SettingsProvider } from 'src/@core/context/settingsContext'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
+import { structuralSharing } from '@wagmi/core/query';
 import {config} from "src/wallet/config"
 
 // ** Styled Components
@@ -74,7 +75,13 @@ const App = props => {
     Component.getLayout ?? (page => <UserLayout contentHeightFixed={contentHeightFixed}>{page}</UserLayout>)
   const setConfig = Component.setConfig ?? undefined
 
-  const queryClient = new QueryClient()
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        structuralSharing,
+      },
+    },
+  })
 
   return (
       <CacheProvider value={emotionCache}>

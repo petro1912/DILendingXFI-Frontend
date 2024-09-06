@@ -157,3 +157,35 @@ code[class*='language-'] {
   margin-right: 10px;
 }
 
+
+.loading-container {
+  width: 80px;
+  height: 20px;
+  margin: 20px;
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.loading-bar {
+  height: 100%;
+  width: 0;
+  background-color: #888; /* Color of the loading bar */
+  animation: loading 2s linear infinite; /* Animation for the loading effect */
+}
+
+@keyframes loading {
+  0% {
+      width: 0;
+      left: 0;
+  }
+  50% {
+      width: 100%;
+      left: 0;
+  }
+  100% {
+      width: 0;
+      left: 100%;
+  }
+}
