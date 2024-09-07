@@ -1,4 +1,7 @@
 
+export const ACTION_DEPOSIT = "deposit"
+export const ACTION_WITHDRAW = "withdraw"
+
 export const truncateAddress = (address) => {
   if (!address) return "No Account";
   const match = address.match(
