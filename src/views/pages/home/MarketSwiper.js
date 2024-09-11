@@ -8,31 +8,17 @@ import CardMarket from './CardMarket';
 // Import Swiper styles
 import { useRouter } from 'next/router';
 import { Navigation, Autoplay } from 'swiper/modules';
+import { useSelector } from 'react-redux';
+import { getPrincipalTokenSymbol } from 'src/wallet/utils';
 
 
-const ImageSwiper = () => {
+const MarketSwiper = () => {
 
   const router = useRouter();
+  const pools = useSelector((state) => state.pools.entities);
 
-  const markets = [{
-    supply: "usdt",
-    collateral: "xusd",
-  }, {
-    supply: "usdt",
-    collateral: "xfi",
-  },{
-    supply: "usdt",
-    collateral: "empx",
-  },{
-    supply: "xusd",
-    collateral: "xfi",
-  },{
-    supply: "xusd",
-    collateral: "empx",
-  }]
-
-  const goMarket = (market) => {
-    router.push(`/markets/${market.supply}-${market.collateral}`)
+  const goMarket = (pool) => {
+    router.push(`/markets/${getPrincipalTokenSymbol(pool)}`)
   }
 
   return (
@@ -44,16 +30,15 @@ const ImageSwiper = () => {
       loop={true}
       modules={[Navigation, Autoplay]}
     >
-      {markets.map((market, index) => {
+      {pools && pools.map((pool, index) => {
         return (
           <SwiperSlide
             hover = "true"
             style={{cursor: 'pointer'}}
             key={index}
-            onClick={() => goMarket(market)}>
+            onClick={() => goMarket(pool)}>
             <CardMarket
-              supply={market.supply}
-              collateral={market.collateral} />
+              pool={pool} />
           </SwiperSlide>
         )
       })}
@@ -61,4 +46,4 @@ const ImageSwiper = () => {
   );
 };
 
-export default ImageSwiper;
+export default MarketSwiper;

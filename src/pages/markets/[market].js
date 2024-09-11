@@ -15,6 +15,13 @@ import TableRow from '@mui/material/TableRow'
 import TableHead from '@mui/material/TableHead'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
+import { TOKENS } from 'src/contracts/tokens';
+import { useReadContract } from 'wagmi';
+import { useState, useEffect } from 'react';
+import { FACTORY_ADDRESS } from 'src/contracts/tokens';
+import ABI_FACTORY from 'src/contracts/artifacts/LendingPoolFactory.json'
+import { getPoolCollateralsInfo } from 'src/contracts/pool';
+import { formatNumber, formatPercent, getTokenSymbol } from 'src/wallet/utils';
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -31,12 +38,37 @@ const Cell = styled(TableCell)(() => ({
 }))
 
 const MarketPage = () => {
+
+  const [pool, setPool] = useState()
+  const [collateralsInfo, setCollateralsInfo] = useState({})
   const router = useRouter();
   const { market } = router.query;
-
   if (!market) return null;
 
-  const [supplyToken, collateralToken] = market.split('-');
+  const {data: pools, isLoading, isError} = useReadContract({
+    address: FACTORY_ADDRESS,
+    abi: ABI_FACTORY.abi,
+    functionName: 'getAllPoolsInfo'
+  })
+
+  useEffect(() => {
+    if (pools && pools.length != 0) {
+      const principalToken = TOKENS.find(token => token.symbol == market)
+      if (principalToken) {
+        const _pool = pools.find(item => item.principalToken == principalToken.address)
+        setPool(_pool)
+      }
+    }
+  }, [pools])
+
+  useEffect(() => {
+    if (pool && pool.poolAddress)
+      getPoolCollateralsInfo(pool.poolAddress)
+        .then(value => {
+          setCollateralsInfo(value)
+        })
+  }, [pool])
+
 
   return (
       <BoxContainer>
@@ -52,8 +84,7 @@ const MarketPage = () => {
             variant='h2'
             sx={{ display: 'flex', mt:4, mb: 2.75, alignItems: 'center', color: 'common.white', '& svg': { mr: 2.5 } }}
           >
-            <img src={`/images/tokens/${supplyToken}.png`} className='tokenImg' />
-            <img src={`/images/tokens/${collateralToken}.png`} className='tokenImg' sx={{mr: -3}} />
+            <img src={`/images/tokens/${market.toLowerCase()}.png`} className='tokenImg' />
             • CrossFi
           </Typography>
 
@@ -61,12 +92,11 @@ const MarketPage = () => {
         <Grid container spacing={6} sx={{mb: 4}}>
           <Grid item xs={12} sm={6} md={6}>
             <Typography variant="h6" color='secondary'>Total Collateral</Typography>
-            <Typography variant="h3" color='primary'>13.45 B</Typography>
-
+            <Typography variant="h3" color='primary'>{ pool && formatNumber(pool.totalCollaterals)} </Typography>
           </Grid>
           <Grid item xs={12} sm={6} md={6}>
             <Typography variant="h6" color='secondary'>Total Borrowing</Typography>
-            <Typography variant="h3" color='#7367F0'>8.82 B</Typography>
+            <Typography variant="h3" color='#7367F0'>{ pool && formatNumber(pool.totalBorrows)} </Typography>
           </Grid>
         </Grid>
         <Card sx={{ boxShadow: 4, borderRadius: 1, p: 1, mb: 4, color: 'common.white', backgroundColor: '#00CFF888' }}>
@@ -77,24 +107,24 @@ const MarketPage = () => {
             <Box sx={{ m: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
               <Box sx={{ display: 'flex', alignItems: 'center'}}>
                 <Box sx={{mr: 6}}>
-                  <Typography variant="h6" color='secondary'>Total Earning</Typography>
-                  <Typography variant="h4" color='white'>8.82 B</Typography>
+                  <Typography variant="h6" color='secondary'>Total Rewards</Typography>
+                  <Typography variant="h4" color='white'>8.82 M</Typography>
                 </Box>
                 <Box sx={{mr: 6}}>
                   <Typography variant="h6" color='secondary'>Available Liquidity</Typography>
-                  <Typography variant="h4" color='white'>8.82 B</Typography>
+                  <Typography variant="h4" color='white'>{pool && formatNumber(pool.totalDeposits - pool.totalBorrows)} </Typography>
                 </Box>
                 <Box sx={{mr: 6}}>
                   <Typography variant="h6" color='secondary'>Total Reserves</Typography>
-                  <Typography variant="h4" color='white'>9.97 M</Typography>
+                  <Typography variant="h4" color='white'>{pool && formatNumber(pool.totalDeposits)}</Typography>
                 </Box>
                 <Box sx={{mr: 6}}>
                   <Typography variant="h6" color='secondary'>Collateralization</Typography>
-                  <Typography variant="h4" color='white'>132.82%</Typography>
+                  <Typography variant="h4" color='white'>{pool && pool.totalDeposits != 0 ? formatNumber(pool.totalCollaterals / pool.totalDeposits) * 100 : '--'} %</Typography>
                 </Box>
               </Box>
               <div>
-                <Typography variant="h6" color='secondary'>Total Earning</Typography>
+                <Typography variant="h6" color='secondary'>Oracle Price</Typography>
                 <Typography variant="h3" color='white'>8.82 B</Typography>
               </div>
             </Box>
@@ -121,7 +151,7 @@ const MarketPage = () => {
             </Card>
           </Grid>
         </Grid>
-        <Card sx={{ boxShadow: 4, borderRadius: 2, p: 2, color: 'common.white', backgroundColor: '#00CFF822' }}>
+        <Card sx={{ boxShadow: 4, borderRadius: 2, p: 2, mb: 6, color: 'common.white', backgroundColor: '#00CFF822' }}>
           <CardContent sx={{ p: theme => `${theme.spacing(3.25, 5, 4.5)} !important` }}>
             <Typography
               variant='h4'
@@ -134,7 +164,6 @@ const MarketPage = () => {
                 <TableRow>
                   <TableCell>Asset</TableCell>
                   <TableCell align='right'>Total Supply</TableCell>
-                  <TableCell align='right'>Reserves</TableCell>
                   <TableCell align='right'>Oracle Price</TableCell>
                   <TableCell align='right'>Collateral Factor</TableCell>
                   <TableCell align='right'>Liquidation Factor</TableCell>
@@ -142,33 +171,38 @@ const MarketPage = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                <TableRow>
-                  <Cell scope='row'>
-                    WBTC
-                  </Cell>
-                  <Cell align='right'>
-                    $414.76M
-                  </Cell>
-                  <Cell align='right'>
-                    $21.61
-                  </Cell>
-                  <Cell align='right'>
-                    $57,200.18
-                  </Cell>
-                  <Cell align='right'>
-                    80%
-                  </Cell>
-                  <Cell align='right'>
-                    85%
-                  </Cell>
-                  <Cell align='right'>
-                    5%
-                  </Cell>
-                </TableRow>
+                {
+                  collateralsInfo && collateralsInfo.tokenData && collateralsInfo.tokenData.map((token, index) => (
+                    <TableRow key={index}>
+                      <Cell scope='row'>
+                        <Box sx={{display: 'flex', alignItems: 'center'}}>
+                          <img src={`/images/tokens/${getTokenSymbol(token.token).toLowerCase()}.png`} className='tokenImg' />
+                          <Typography>{getTokenSymbol(token.token)}</Typography>
+                        </Box>
+                      </Cell>
+                      <Cell align='right'>
+                        {formatNumber(token.totalSupply)}
+                      </Cell>
+                      <Cell align='right'>
+                        {formatNumber(token.oraclePrice)}
+                      </Cell>
+                      <Cell align='right'>
+                        {formatPercent(collateralsInfo.loanToValue)} %
+                      </Cell>
+                      <Cell align='right'>
+                        {formatPercent(collateralsInfo.liquidationThreshold)} %
+                      </Cell>
+                      <Cell align='right'>
+                        {formatPercent(collateralsInfo.liquidationBonus)} %
+                      </Cell>
+                    </TableRow>
+                  ))
+                }
+
               </TableBody>
             </Table>
             </CardContent>
-          </Card>
+        </Card>
 
     </BoxContainer>
   );
