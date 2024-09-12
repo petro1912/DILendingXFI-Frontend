@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography"
 import UnderlineInput from 'src/@core/components/UnderlineInput';
 import { Button, DialogActions } from "@mui/material"
 import { useState } from "react"
+import { getTokenImgName, getTokenSymbol } from "src/wallet/utils"
 
 
 const CollateralDialog = (props) => {
@@ -47,10 +48,10 @@ const CollateralDialog = (props) => {
             </Box>
             <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
               <Box sx={{display: 'flex', alignItems: 'center'}}>
-                <img src={`/images/tokens/${props.token}.png`} className='tokenImg' />
-                <Typography variant="h3">{props.token.toUpperCase()}</Typography>
+                <img src={`/images/tokens/${getTokenImgName(props.token.token)}.png`} className='tokenImg' />
+                <Typography variant="h3">{getTokenSymbol(props.token.token)}</Typography>
               </Box>
-              <Typography variant="h3">{props.token.toUpperCase()}</Typography>
+              <Typography variant="h3">0.0</Typography>
             </Box>
           </Box>
         }

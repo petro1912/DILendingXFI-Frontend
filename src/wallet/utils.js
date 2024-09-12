@@ -57,6 +57,12 @@ export const getTokenSymbol = (token_address) => {
   return token?.symbol
 }
 
+export const getTokenImgName = (token_address) => {
+  const token = TOKENS.find(token => token.address == token_address);
+
+  return token?.symbol.toLowerCase()
+}
+
 export const formatNumber = (bigNumberValue) => {
   if (typeof bigNumberValue != 'bigint')
     return 0

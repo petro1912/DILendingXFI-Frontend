@@ -32,7 +32,7 @@ const CardMarket = (props) => {
             principalToken &&
             <img src={`/images/tokens/${principalToken.symbol.toLowerCase()}.png`} className='tokenImg' />
           }
-          | CrossFi
+          | {principalToken && principalToken.symbol} CrossFi
         </Typography>
         <Box sx={{ m: 2 }}>
           <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between'}}>

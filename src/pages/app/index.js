@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
 	Box,
 	Grid,
@@ -9,11 +9,35 @@ import Position from 'src/views/pages/app/Position';
 import SupplyBorrow from 'src/views/pages/app/SupplyBorrow';
 import Collaterals from 'src/views/pages/app/Collaterals';
 import HeaderBalance from 'src/views/pages/app/HeaderBalance';
+import { useSelector, useDispatch } from 'react-redux';
+import { useReadContract } from "wagmi"
+import { FACTORY_ADDRESS } from "src/contracts/tokens"
+import ABI_FACTORY from 'src/contracts/artifacts/LendingPoolFactory.json'
+import { setPoolsInfo } from "src/redux/poolsSlice"
 
 const App = () => {
 
-	const [token, setToken] = useState("usdt")
+  const dispatch = useDispatch();
 
+  const [pool, setPool] = useState();
+  const pools = useSelector((state) => state.pools.entities);
+
+  const {data: pools_data} = useReadContract({
+    address: FACTORY_ADDRESS,
+    abi: ABI_FACTORY.abi,
+    functionName: 'getAllPoolsInfo'
+  })
+
+  useEffect(() => {
+    if (pools_data && pools_data.length != 0)
+      dispatch(setPoolsInfo(pools_data))
+  }, [pools_data])
+
+  useEffect(() => {
+    if (pools && pools.length != 0) {
+      setPool(pools[0])
+    }
+  }, [pools])
 
 	return (
 		<>
@@ -24,8 +48,8 @@ const App = () => {
 						mb: 6
 					}}>
 					<HeaderBalance
-						token={token}
-						setToken={setToken}
+            pool={pool}
+            setPool={setPool}
 					/>
 				</Box>
 
@@ -34,12 +58,13 @@ const App = () => {
 					spacing={6}>
 
 					<Grid item xs={12} sm={6} md={8}>
-						<Collaterals />
+						<Collaterals
+              pool={pool}/>
 					</Grid>
 
 					<Grid item xs={12} sm={6} md={4}>
-						<SupplyBorrow token={token} />
-						<Position />
+						<SupplyBorrow pool={pool} />
+						<Position pool={pool}/>
 					</Grid>
 
 				</Grid>

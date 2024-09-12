@@ -7,6 +7,7 @@ import CardContent from "@mui/material/CardContent"
 import Icon from 'src/@core/components/icon'
 import UnderlineInput from 'src/@core/components/UnderlineInput';
 import { useAccount } from 'wagmi'
+import { formatPercent, getTokenImgName } from 'src/wallet/utils'
 
 const SupplyBorrow = (props) => {
 
@@ -24,9 +25,12 @@ const SupplyBorrow = (props) => {
           Wallet Balance
         </Typography>
         <Box sx={{ p: 2, display: 'flex', alignItems: 'center', mb: 2 }}>
-          <img
-            src={`/images/tokens/${props.token}.png`}
-            className='tokenImg small' />
+          {
+            props.pool &&
+            <img
+              src={`/images/tokens/${getTokenImgName(props.pool.principalToken)}.png`}
+              className='tokenImg small' />
+          }
           <Typography variant='h4' sx={{ mr: 2 }}>
             0.0000
           </Typography>
@@ -50,7 +54,7 @@ const SupplyBorrow = (props) => {
               Net Borrow APR
             </Typography>
             <Typography variant='h5' sx={{ mr: 2 }}>
-              3.72 %
+              {formatPercent(props.pool?.borrowAPR)} %
             </Typography>
           </Box>
           <Box sx={{ textAlign: 'right' }}>
@@ -58,7 +62,7 @@ const SupplyBorrow = (props) => {
               Net Supply APR
             </Typography>
             <Typography variant='h5' sx={{ mr: 2 }}>
-              3.53 %
+              {formatPercent(props.pool?.earnAPR)} %
             </Typography>
           </Box>
         </Box>

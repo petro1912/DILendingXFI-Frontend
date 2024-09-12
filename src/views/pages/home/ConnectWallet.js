@@ -22,12 +22,17 @@ const ConnectWallet = () => {
   const [anchorEl, setAnchorEl] = useState(null)
   const [openModal, setOpenModal] = useState(false)
   const { address, isConnected } = useAccount()
+  const chainId = useChainId();
   const { connect, connectors } = useConnect()
   const { disconnect } = useDisconnect()
 
   useEffect(() => {
     setIsClient(true)
   }, [])
+
+  useEffect(() => {
+    console.log('chainId', chainId)
+  }, [isConnected])
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget)

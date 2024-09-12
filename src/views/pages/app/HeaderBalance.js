@@ -1,4 +1,5 @@
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
+import { useSelector } from 'react-redux'
 import {
   Box,
   Button,
@@ -8,11 +9,12 @@ import {
 } from '@mui/material'
 import BalanceText from '../home/BalanceText'
 import Icon from 'src/@core/components/icon'
+import { getPrincipalTokenSymbol, getTokenImgName } from 'src/wallet/utils'
 
 const HeaderBalance = (props) => {
 
-  const tokens = ['usdt', 'xusd']
-	const [anchorEl, setAnchorEl] = useState(null)
+  const [anchorEl, setAnchorEl] = useState(null)
+  const pools = useSelector((state) => state.pools.entities);
 
 	const handleClick = event => {
 		setAnchorEl(event.currentTarget)
@@ -22,11 +24,10 @@ const HeaderBalance = (props) => {
 		setAnchorEl(null)
 	}
 
-	const selectToken = (_token) => {
-		props.setToken(_token)
+	const selectPool = (_pool) => {
+		props.setPool(_pool)
 		handleClose()
 	}
-
 
   return (
     <Box>
@@ -43,7 +44,10 @@ const HeaderBalance = (props) => {
             aria-controls='simple-menu'
             aria-haspopup='true'
             onClick={handleClick}>
-            <img src={`/images/tokens/${props.token}.png`} className='tokenImg' />
+            {
+              props.pool &&
+              <img src={`/images/tokens/${getTokenImgName(props.pool.principalToken)}.png`} className='tokenImg' />
+            }
             <Icon icon="tabler:caret-down" />
           </Button>
           <Menu
@@ -53,13 +57,13 @@ const HeaderBalance = (props) => {
             onClose={handleClose}
             open={Boolean(anchorEl)}>
             {
-                tokens.map((_token, index) => (
+                pools && pools.map((_pool, index) => (
                 <MenuItem
                     key={index}
-                    disabled={_token == props.token}
-                    onClick={() => selectToken(_token)}>
-                    <img src={`/images/tokens/${_token}.png`} className='tokenImg' />
-                    {_token}
+                    disabled={_pool == props.pool}
+                    onClick={() => selectPool(_pool)}>
+                    <img src={`/images/tokens/${getTokenImgName(_pool.principalToken)}.png`} className='tokenImg' />
+                    {getPrincipalTokenSymbol(_pool)}
                 </MenuItem>)
                 )
             }
