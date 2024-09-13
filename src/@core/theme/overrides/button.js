@@ -45,10 +45,7 @@ const Button = () => {
           style: ({ theme }) => ({
             '&:hover': {
               backgroundColor: hexToRGBA(theme.palette.warning.main, 0.08)
-            },
-            '&.Mui-disabled': {
-              backgroundColor: 'rgba(255, 255, 255, 0.1)'
-            },
+            }
           })
         },
         {
@@ -167,6 +164,9 @@ const Button = () => {
             ['background-color', 'box-shadow', 'border-color', 'color', 'transform'],
             { duration: theme.transitions.duration.shortest }
           ),
+          '&.Mui-disabled': {
+            backgroundColor: 'rgba(255, 255, 255, 0.1)!important'
+          },
           ...(ownerState.size === 'medium' &&
             ownerState.variant === 'text' && {
               padding: theme.spacing(2.5, 3)

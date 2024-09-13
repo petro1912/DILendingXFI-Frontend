@@ -14,6 +14,7 @@ import WalletOption from './WalletOption';
 import Icon from 'src/@core/components/icon'
 
 import CloseButton from '../CloseModalButton';
+import { useRouter } from 'next/router';
 
 
 const ConnectWallet = () => {
@@ -25,6 +26,7 @@ const ConnectWallet = () => {
   const chainId = useChainId();
   const { connect, connectors } = useConnect()
   const { disconnect } = useDisconnect()
+  const router = useRouter();
 
   useEffect(() => {
     setIsClient(true)
@@ -50,6 +52,10 @@ const ConnectWallet = () => {
     connect({ connector })
   }
 
+  const goDashboard = () => {
+    router.push('/dashboard')
+  }
+
   if (isConnected && isClient) {
     return (
       <div>
@@ -57,8 +63,8 @@ const ConnectWallet = () => {
           {truncateAddress(address)}
         </Button>
         <Menu keepMounted id='simple-menu' anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
-          <MenuItem onClick={handleClose}>Profile</MenuItem>
-          <MenuItem onClick={() => disconnect()}>Disconnect</MenuItem>
+          <MenuItem onClick={goDashboard}>Dashboard</MenuItem>
+          <MenuItem onClick={disconnect}>Disconnect</MenuItem>
         </Menu>
       </div>
     );

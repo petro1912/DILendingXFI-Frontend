@@ -21,7 +21,7 @@ import { useState, useEffect } from 'react';
 import { FACTORY_ADDRESS } from 'src/contracts/tokens';
 import ABI_FACTORY from 'src/contracts/artifacts/LendingPoolFactory.json'
 import { getPoolCollateralsInfo } from 'src/contracts/pool';
-import { formatNumber, formatPercent, getTokenSymbol } from 'src/wallet/utils';
+import { formatNumber, formatPercent, formatPrice, getTokenSymbol } from 'src/wallet/utils';
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -39,17 +39,23 @@ const Cell = styled(TableCell)(() => ({
 
 const MarketPage = () => {
 
+  const [client, setClient] = useState(false)
   const [pool, setPool] = useState()
   const [collateralsInfo, setCollateralsInfo] = useState({})
   const router = useRouter();
   const { market } = router.query;
   if (!market) return null;
 
+
   const {data: pools, isLoading, isError} = useReadContract({
     address: FACTORY_ADDRESS,
     abi: ABI_FACTORY.abi,
     functionName: 'getAllPoolsInfo'
   })
+
+  useEffect(() => {
+    setClient(true)
+  }, [])
 
   useEffect(() => {
     if (pools && pools.length != 0) {
@@ -92,14 +98,14 @@ const MarketPage = () => {
         <Grid container spacing={6} sx={{mb: 4}}>
           <Grid item xs={12} sm={6} md={6}>
             <Typography variant="h6" color='secondary'>Total Collateral</Typography>
-            <Typography variant="h3" color='primary'>{ pool && formatNumber(pool.totalCollaterals)} </Typography>
+            <Typography variant="h3" color='primary'>${ pool && formatNumber(pool.totalCollaterals)} </Typography>
           </Grid>
           <Grid item xs={12} sm={6} md={6}>
             <Typography variant="h6" color='secondary'>Total Borrowing</Typography>
-            <Typography variant="h3" color='#7367F0'>{ pool && formatNumber(pool.totalBorrows)} </Typography>
+            <Typography variant="h3" color='#7367F0'>${ pool && formatNumber(pool.totalBorrows)} </Typography>
           </Grid>
         </Grid>
-        <Card sx={{ boxShadow: 4, borderRadius: 1, p: 1, mb: 4, color: 'common.white', backgroundColor: '#00CFF888' }}>
+        <Card sx={{ boxShadow: 4, borderRadius: 1, p: 1, mb: 4, color: 'common.white', backgroundColor: '#00CFF811' }}>
           <CardContent sx={{ p: theme => `${theme.spacing(3.25, 5, 4.5)} !important` }}>
             <Typography variant='h5' sx={{mb: 2}}>
               Market Stats
@@ -181,19 +187,19 @@ const MarketPage = () => {
                         </Box>
                       </Cell>
                       <Cell align='right'>
-                        {formatNumber(token.totalSupply)}
+                        <Typography>{formatNumber(token.totalSupply)}</Typography>
                       </Cell>
                       <Cell align='right'>
-                        {formatNumber(token.oraclePrice)}
+                        <Typography>${formatPrice(token.oraclePrice)}</Typography>
                       </Cell>
                       <Cell align='right'>
-                        {formatPercent(collateralsInfo.loanToValue)} %
+                        <Typography>{formatPercent(collateralsInfo.loanToValue)}%</Typography>
                       </Cell>
                       <Cell align='right'>
-                        {formatPercent(collateralsInfo.liquidationThreshold)} %
+                        <Typography>{formatPercent(collateralsInfo.liquidationThreshold)}%</Typography>
                       </Cell>
                       <Cell align='right'>
-                        {formatPercent(collateralsInfo.liquidationBonus)} %
+                        <Typography>{formatPercent(collateralsInfo.liquidationBonus)}%</Typography>
                       </Cell>
                     </TableRow>
                   ))

@@ -185,15 +185,15 @@ const CollateralDialog = (props) => {
 
         <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', my: 2}}>
           <Typography color="grey" sx={{textAlign: 'right'}}>
-            price: { price }$
+            Price: { price }$
           </Typography>
           <Typography color="grey" sx={{textAlign: 'right'}}>
-            value: ${ amount && price ? (price * parseFloat (amount)).toFixed(2) : '0' }
+            Value: ${ amount && price ? (price * parseFloat (amount)).toFixed(2) : '0' }
           </Typography>
         </Box>
 
         <Typography color="grey" sx={{textAlign: 'right'}}>
-          available: { props.action == ACTION_DEPOSIT ? `$${balance}` : `${formatNumber(props.token.amount)} ${getTokenSymbol(props.token.token)}` }
+          Available: { props.action == ACTION_DEPOSIT ? `${balance}` : `${formatNumber(props.token.amount)} ${getTokenSymbol(props.token.token)}` }
         </Typography>
 
       </Box>

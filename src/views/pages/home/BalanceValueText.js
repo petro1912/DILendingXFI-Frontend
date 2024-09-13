@@ -13,7 +13,6 @@ const BalanceValueText = (props) => {
       getTokenValue(props.token, address)
       .then(res => {
         const {value} = res
-        console.log(value)
         setTokenValue(value)
       })
       // setTokenValue((_balance * _price).toFixed(2))

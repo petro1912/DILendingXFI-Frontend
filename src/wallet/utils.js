@@ -51,6 +51,12 @@ export const getTokenInfo = (token_address) => {
   return token
 }
 
+export const getTokenName = (token_address) => {
+  const token = TOKENS.find(token => token.address == token_address);
+
+  return token?.name
+}
+
 export const getTokenSymbol = (token_address) => {
   const token = TOKENS.find(token => token.address == token_address);
 
@@ -73,7 +79,14 @@ export const formatNumber = (bigNumberValue) => {
   if (typeof bigNumberValue != 'bigint')
     return 0
 
-  return ethers.formatUnits(bigNumberValue, 18);
+  return ethers.formatEther(bigNumberValue, 18);
+}
+
+export const formatPrice = (bigNumberValue) => {
+  if (typeof bigNumberValue != 'bigint')
+    return 0
+
+  return ethers.formatUnits(bigNumberValue, 8);
 }
 
 export const formatPercent = (value) => {

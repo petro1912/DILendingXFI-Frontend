@@ -9,12 +9,7 @@ import NProgress from 'nprogress'
 import { CacheProvider } from '@emotion/react'
 
 // ** Config Imports
-
-import { defaultACLObj } from 'src/configs/acl'
 import themeConfig from 'src/configs/themeConfig'
-
-// ** Fake-DB Import
-import 'src/@fake-db'
 
 // ** Third Party Import
 import { Toaster } from 'react-hot-toast'

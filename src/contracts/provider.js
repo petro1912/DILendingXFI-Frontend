@@ -43,7 +43,7 @@ export async function connectBrowserExtensionWallet() {
   return walletExtensionAddress
 }
 
-function createBrowserExtensionProvider() {
+export function createBrowserExtensionProvider() {
   try {
     return new ethers.BrowserProvider(window?.ethereum, 'any')
   } catch (e) {

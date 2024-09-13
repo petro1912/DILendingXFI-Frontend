@@ -10,7 +10,7 @@ import {
 import { styled } from '@mui/material/styles'
 import Icon from 'src/@core/components/icon'
 import CollateralDialog from './CollateralDialog';
-import { formatNumber, getTokenImgName, getTokenSymbol } from 'src/wallet/utils';
+import { formatNumber, getTokenImgName, getTokenName, getTokenSymbol } from 'src/wallet/utils';
 import { getCollateralTokens, getUserCollateralsInfo } from 'src/contracts/pool';
 import { useAccount, isConnected } from 'wagmi';
 
@@ -107,15 +107,28 @@ const Collaterals = (props) => {
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <img
                     src={`/images/tokens/${getTokenImgName(collateral.token)}.png`}
-                    className='tokenImg small' />
-                  <Typography variant="h4" sx={{ textTransform: 'uppercase' }}>
-                    {getTokenSymbol(collateral.token)}
-                  </Typography>
+                    className='tokenImg' />
+                  <Box>
+                    <Typography variant="h5">
+                      {getTokenName(collateral.token)}
+                    </Typography>
+                    <Typography variant="subtitle1" color="grey">
+                      {getTokenSymbol(collateral.token)}
+                    </Typography>
+                  </Box>
                 </Box>
                 <Box gap={3} sx={{ display: 'flex', alignItems: 'center', }}>
-                  <Typography variant="h5" color={isConnected? 'white' : 'grey'}>
-                    $ {formatNumber(collateral.value)}
-                  </Typography>
+                  <Box>
+                    <Typography variant="h5" color={isConnected? 'white' : 'grey'}>
+                      {formatNumber(collateral.amount)}
+                    </Typography>
+                    {
+                      collateral.value != 0n &&
+                      <Typography variant="subtitle2" color={'grey'}>
+                        ${formatNumber(collateral.value)}
+                      </Typography>
+                    }
+                  </Box>
                   <PlusButton size="small" color="primary" disabled={!isConnected} onClick={() => showCollateralDialog(collateral, 'deposit')}>
                     <Icon icon="tabler:plus" />
                   </PlusButton>

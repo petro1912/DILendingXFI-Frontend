@@ -14,6 +14,7 @@ import { useReadContract } from "wagmi"
 import { FACTORY_ADDRESS } from "src/contracts/tokens"
 import ABI_FACTORY from 'src/contracts/artifacts/LendingPoolFactory.json'
 import { setPoolsInfo } from "src/redux/poolsSlice"
+import { createBrowserExtensionProvider } from 'src/contracts/provider';
 
 const App = () => {
 
@@ -27,6 +28,10 @@ const App = () => {
     abi: ABI_FACTORY.abi,
     functionName: 'getAllPoolsInfo'
   })
+
+  useEffect(() => {
+    createBrowserExtensionProvider()
+  }, [])
 
   useEffect(() => {
     if (pools_data && pools_data.length != 0)

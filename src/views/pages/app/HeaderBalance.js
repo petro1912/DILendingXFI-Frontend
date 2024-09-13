@@ -10,14 +10,10 @@ import {
 import BalanceText from '../home/BalanceText'
 import Icon from 'src/@core/components/icon'
 import { getPrincipalTokenSymbol, getTokenImgName } from 'src/wallet/utils'
-import { ethers } from 'ethers'
-import { getTokenBalance } from 'src/contracts/pool'
-import { useAccount } from 'wagmi'
 import BalanceValueText from '../home/BalanceValueText'
 
 const HeaderBalance = (props) => {
 
-  const {address, isConnected} = useAccount()
   const [anchorEl, setAnchorEl] = useState(null)
   const pools = useSelector((state) => state.pools.entities);
   const [principalToken, setPrincipalToken] = useState()

@@ -12,11 +12,9 @@ import Icon from 'src/@core/components/icon'
 import themeConfig from 'src/configs/themeConfig'
 
 // ** Components
-import Customizer from 'src/@core/components/customizer'
 import Footer from './components/shared-components/footer'
 import ScrollToTop from 'src/@core/components/scroll-to-top'
-import AppBarContent from './components/horizontal/app-bar-content'
-
+import AppBarContent from './components/app-bar-content'
 
 const HorizontalLayoutWrapper = styled('div')({
   height: '100%',
@@ -59,14 +57,12 @@ const ContentWrapper = styled('main')(({ theme }) => ({
 const HorizontalLayout = props => {
   // ** Props
   const {
-    hidden,
     children,
     settings,
     scrollToTop,
     footerProps,
     saveSettings,
     contentHeightFixed,
-    horizontalLayoutProps
   } = props
 
   return (
@@ -102,10 +98,8 @@ const HorizontalLayout = props => {
             >
               <AppBarContent
                 {...props}
-                hidden={hidden}
                 settings={settings}
                 saveSettings={saveSettings}
-                appBarContent={horizontalLayoutProps?.appBar?.content}
               />
             </Toolbar>
           </Box>
