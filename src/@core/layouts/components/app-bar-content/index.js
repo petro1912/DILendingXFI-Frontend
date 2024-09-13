@@ -12,6 +12,7 @@ import themeConfig from 'src/configs/themeConfig'
 import UserDropdown from 'src/@core/layouts/components/shared-components/UserDropdown'
 import ConnectWallet from 'src/views/pages/home/ConnectWallet'
 import { useState } from 'react'
+import { useRouter } from 'next/router'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   display: 'flex',
@@ -22,17 +23,28 @@ const LinkStyled = styled(Link)(({ theme }) => ({
   color: `${theme.palette.text.secondary} !important`,
   '&:hover': {
     color: `${theme.palette.primary.main} !important`
+  },
+  '&.active': {
+    color: `${theme.palette.primary.main} !important`,
+    '&:hover': {
+      color: `${theme.palette.primary.main} !important`
+    },
   }
 }))
 
 const AppBarContent = props => {
 
+  const router = useRouter()
   const [account, setAccount] = useState(null);
+
+  console.log(router, router.pathname)
+  const activeMenuClass = (name) => {
+    return router.pathname.startsWith(name) ? 'active' : ''
+  }
 
 
   return (
-    <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-
+    <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 4}}>
       <LinkStyled href='/'>
         <img className='logo' src="/images/logo.png" />
         <Typography variant='h4' sx={{ ml: 2.5, fontWeight: 700, lineHeight: '24px' }}>
@@ -41,34 +53,57 @@ const AppBarContent = props => {
       </LinkStyled>
 
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <Typography
-          sx={{mr: 6}}
-          component={LinkStyled}
-          href='/markets'
-        >
-          Markets
-        </Typography>
-        <Typography
-          sx={{mr: 6}}
-          component={LinkStyled}
-          href='/governance'
-        >
-          Governance
-        </Typography>
-        <Typography
-          target='_blank'
-          sx={{mr: 6}}
-          component={LinkStyled}
-          href='https://dilending.gitbook.io/di-lending'
-        >
-          Documentation
-        </Typography>
-        <Typography
-          sx={{mr: 26}}
-          component={LinkStyled}
-          href='/app'>
-          App
-        </Typography>
+        <Box sx={{
+            display: 'flex',
+            alignItems: 'center',
+            background: '#11111122',
+            borderRadius: '20px',
+            backdropFilter: 'blur(6px)',
+            mr: 26,
+            px: 8,
+            py: 2,
+            border: '2px solid #00CFE8'
+          }}>
+          <Typography
+            sx={{mr: 6}}
+            component={LinkStyled}
+            className={router.pathname == '/'? 'active' : ''}
+            href='/'
+          >
+            Home
+          </Typography>
+          <Typography
+            sx={{mr: 6}}
+            component={LinkStyled}
+            className={activeMenuClass('/markets')}
+            href='/markets'
+          >
+            Markets
+          </Typography>
+          <Typography
+            sx={{mr: 6}}
+            className={activeMenuClass('/governance')}
+            component={LinkStyled}
+            href='/governance'
+          >
+            Governance
+          </Typography>
+          <Typography
+            target='_blank'
+            sx={{mr: 6}}
+            component={LinkStyled}
+            href='https://dilending.gitbook.io/di-lending'
+          >
+            Documentation
+          </Typography>
+          <Typography
+
+            className={activeMenuClass('/app')}
+            component={LinkStyled}
+            href='/app'>
+            App
+          </Typography>
+        </Box>
         <ConnectWallet account={account} setAccount={setAccount}/>
         {false && <UserDropdown settings={props.settings} /> }
       </Box>
