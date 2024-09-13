@@ -5,11 +5,9 @@ import Link from 'next/link'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { styled } from '@mui/material/styles'
-import Button from '@mui/material/Button'
 
 // ** Theme Config Import
 import themeConfig from 'src/configs/themeConfig'
-import UserDropdown from 'src/@core/layouts/components/shared-components/UserDropdown'
 import ConnectWallet from 'src/views/pages/home/ConnectWallet'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
@@ -107,7 +105,6 @@ const AppBarContent = props => {
           </Typography>
         </Box>
         <ConnectWallet account={account} setAccount={setAccount}/>
-        {false && <UserDropdown settings={props.settings} /> }
       </Box>
 
     </Box>
