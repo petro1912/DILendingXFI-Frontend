@@ -33,8 +33,6 @@ const MinusButton = styled(IconButton)({
 const Collaterals = (props) => {
 
   const { address, isConnected } = useAccount()
-  // const address = "0x0e801d84fa97b50751dbf25036d067dcf18858bf";
-  // const isConnected = true
 
   const [collateralsInfo, setCollateralsInfo] = useState()
   const [collateralAction, setCollateralAction] = useState('deposit')
@@ -74,6 +72,17 @@ const Collaterals = (props) => {
     setOpenCollateralModal(false)
   }
 
+  const isEnabledWithdrawal = (value) => {
+    if (!isConnected || !value)
+      return false
+
+    const x = parseFloat(formatNumber(value))
+    if (!x || x == 0)
+      return false
+
+    return true
+  }
+
   return (
     <Box>
       <Card sx={{ boxShadow: 4, borderRadius: 2, p: 1, color: 'common.white', backgroundColor: '#000000', mb: 6 }}>
@@ -105,12 +114,12 @@ const Collaterals = (props) => {
                 </Box>
                 <Box gap={3} sx={{ display: 'flex', alignItems: 'center', }}>
                   <Typography variant="h5" color={isConnected? 'white' : 'grey'}>
-                    {formatNumber(collateral.value)}
+                    $ {formatNumber(collateral.value)}
                   </Typography>
                   <PlusButton size="small" color="primary" disabled={!isConnected} onClick={() => showCollateralDialog(collateral, 'deposit')}>
                     <Icon icon="tabler:plus" />
                   </PlusButton>
-                  <MinusButton size="small" color="warning" disabled={!isConnected} onClick={() => showCollateralDialog(collateral, 'withdraw')}>
+                  <MinusButton size="small" color="warning" disabled={!isEnabledWithdrawal(collateral.value)} onClick={() => showCollateralDialog(collateral, 'withdraw')}>
                     <Icon icon="tabler:minus" />
                   </MinusButton>
                 </Box>
@@ -120,6 +129,7 @@ const Collaterals = (props) => {
         </CardContent>
       </Card>
       <CollateralDialog
+        pool={props.pool}
         token={collateralToken}
         action={collateralAction}
         openModal= {openCollateralModal}

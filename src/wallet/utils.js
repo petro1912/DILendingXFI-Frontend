@@ -63,6 +63,12 @@ export const getTokenImgName = (token_address) => {
   return token?.symbol.toLowerCase()
 }
 
+export const getTokenOracleKey = (token_address) => {
+  const token = TOKENS.find(token => token.address == token_address);
+
+  return token?.oracleKey
+}
+
 export const formatNumber = (bigNumberValue) => {
   if (typeof bigNumberValue != 'bigint')
     return 0
@@ -72,4 +78,8 @@ export const formatNumber = (bigNumberValue) => {
 
 export const formatPercent = (value) => {
   return formatNumber(value) * 100
+}
+
+export const isOnlyNumber = (value) => {
+  return /^-?\d*\.?\d*$/.test(value)
 }

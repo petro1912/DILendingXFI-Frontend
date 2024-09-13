@@ -45,7 +45,10 @@ const Button = () => {
           style: ({ theme }) => ({
             '&:hover': {
               backgroundColor: hexToRGBA(theme.palette.warning.main, 0.08)
-            }
+            },
+            '&.Mui-disabled': {
+              backgroundColor: 'rgba(255, 255, 255, 0.1)'
+            },
           })
         },
         {

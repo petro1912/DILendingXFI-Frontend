@@ -1,5 +1,5 @@
 {
-  "name": "vuexy-nextjs-admin-template",
+  "name": "di-lending-frontend",
   "version": "1.2.0",
   "private": true,
   "scripts": {
@@ -9,7 +9,8 @@
     "export": "next export",
     "lint": "eslint --fix \"src/**/*.{js,jsx}\"",
     "format": "prettier --write \"src/**/*.{js,jsx}\"",
-    "build:icons": "node src/iconify-bundle/bundle-icons-react.js"
+    "build:icons": "node src/iconify-bundle/bundle-icons-react.js",
+    "test:mint": "node test/test.js"
   },
   "dependencies": {
     "@babel/core": "7.21.5",

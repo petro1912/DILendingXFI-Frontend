@@ -6,20 +6,123 @@ import Icon from 'src/@core/components/icon'
 import Typography from "@mui/material/Typography"
 import UnderlineInput from 'src/@core/components/UnderlineInput';
 import { Button, DialogActions } from "@mui/material"
-import { useState } from "react"
-import { getTokenImgName, getTokenSymbol } from "src/wallet/utils"
+import { useEffect, useState } from "react"
+import { ACTION_DEPOSIT, ACTION_WITHDRAW, formatNumber, getTokenImgName, getTokenSymbol, isOnlyNumber } from "src/wallet/utils"
+import { getTokenPrice, getTokenDecimals, getTokenValue } from "src/contracts/pool"
+import { useAccount } from "wagmi"
+import toast from "react-hot-toast"
+import { ethers } from "ethers"
+import { depositTransaction, withdrawTransaction } from "src/contracts/actions"
 
 
 const CollateralDialog = (props) => {
 
-  const [amount, setAmount] = useState(100)
+  const {address} = useAccount()
+  const [amount, setAmount] = useState('0')
+  const [balance, setBalance] = useState()
+  const [price, setPrice] = useState()
+  const [value, setValue] = useState()
+
+  useEffect(() => {
+    const { token } = props.token
+    if (token && address) {
+      getTokenValue(token, address).then(res => {
+        const {balance, value} = res
+        setBalance(balance)
+        setValue(value)
+      })
+
+      getTokenPrice(token)
+        .then(value => {
+          setPrice(value)
+        })
+    }
+  }, [props.token, address])
+
+
   const handleClose = () => {
     if (props.handleClose)
       props.handleClose()
   }
 
   const handleAmountChange = (event) => {
-    setAmount(event.target.value)
+    const inputValue = event.target.value;
+    if (isOnlyNumber(inputValue)) {
+      if (getAvailableAmount() < parseFloat(inputValue)) {
+        if (props.action == ACTION_WITHDRAW)
+          toast.error("Withdraw amount can't exceed your current deposits")
+        else
+          toast.error("Deposit amount can't exceed your current balance")
+        return;
+      }
+
+      setAmount(inputValue);
+    }
+  }
+
+  const handleAction = () => {
+    if (props.action == ACTION_DEPOSIT) {
+      depositAction()
+    } else {
+      withdrawAction()
+    }
+  }
+
+  const getAvailableAmount = () => {
+    return props.action == ACTION_DEPOSIT ?
+      parseFloat(balance) :
+      parseFloat(formatNumber(props.token.amount))
+  }
+
+  const setHalfAmount = () => {
+    setAmount(getAvailableAmount() / 2)
+  }
+
+  const setMaxAmount = () => {
+    setAmount(getAvailableAmount())
+  }
+
+  const depositAction = async () => {
+    const _amount = parseFloat(amount)
+    const _balance = parseFloat(balance)
+    if (!_amount || _amount > _balance) {
+      toast.error("Amount should be non-zero and less than balance")
+      return
+    }
+
+    const {token} = props.token
+    const decimals = await getTokenDecimals(token)
+    const formatAmount = ethers.parseUnits(_amount.toString(), decimals)
+
+    depositTransaction(props.pool.poolAddress, token, formatAmount)
+      .then(res => {
+        console.log(res)
+      })
+      .catch(error => {
+        console.log(error)
+      })
+
+  }
+
+  const withdrawAction = async () => {
+    const _amount = parseFloat(amount)
+    const _balance = parseFloat(balance)
+    if (!_amount || _amount > _balance) {
+      toast.error("Amount should be non-zero and less than balance")
+      return
+    }
+
+    const {token} = props.token
+    const decimals = await getTokenDecimals(token)
+    const formatAmount = ethers.parseUnits(_amount.toString(), decimals)
+
+    withdrawTransaction(props.pool.poolAddress, token, formatAmount)
+      .then(res => {
+        console.log(res)
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   return (
@@ -41,7 +144,7 @@ const CollateralDialog = (props) => {
       <Box sx={{ px: 8, py:4 }}>
         {
           props.token &&
-          <Box sx={{mb: 4}}>
+          <Box sx={{mb: 6}}>
             <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
               <Typography variant="h6" color="secondary">Token</Typography>
               <Typography variant="h6" color="secondary">Protocol Balance</Typography>
@@ -51,26 +154,58 @@ const CollateralDialog = (props) => {
                 <img src={`/images/tokens/${getTokenImgName(props.token.token)}.png`} className='tokenImg' />
                 <Typography variant="h3">{getTokenSymbol(props.token.token)}</Typography>
               </Box>
-              <Typography variant="h3">0.0</Typography>
+              <Typography variant="h3"> {formatNumber(props.token.amount)}</Typography>
             </Box>
+            <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'end'}}>
+              <Typography color="grey" variant="h6">${formatNumber(props.token.value)}</Typography>
+            </Box>
+          </Box>
+        }
+        {
+          <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'end'}}>
+            <Button
+              onClick={setHalfAmount}
+              color="warning"
+              sx={{textTransform: 'capitalize', mx: 2}}>
+              Half
+            </Button>
+            <Button
+              onClick={setMaxAmount}
+              color="success"
+              sx={{textTransform: 'capitalize'}}>
+              Max
+            </Button>
           </Box>
         }
         <UnderlineInput
           label="amount"
-          amount={amount}
+          value={amount}
           onChange={handleAmountChange}
           fullWidth />
 
-        <Typography sx={{textAlign: 'right', mb: 2}}>
-          {amount * 100}
+        <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', my: 2}}>
+          <Typography color="grey" sx={{textAlign: 'right'}}>
+            price: { price }$
+          </Typography>
+          <Typography color="grey" sx={{textAlign: 'right'}}>
+            value: ${ amount && price ? (price * parseFloat (amount)).toFixed(2) : '0' }
+          </Typography>
+        </Box>
+
+        <Typography color="grey" sx={{textAlign: 'right'}}>
+          available: { props.action == ACTION_DEPOSIT ? `$${balance}` : `${formatNumber(props.token.amount)} ${getTokenSymbol(props.token.token)}` }
         </Typography>
+
       </Box>
       <DialogActions>
         <Button
+          onClick={handleAction}
           sx={{textTransform: 'capitalize'}}>
           {props.action}
         </Button>
-        <Button color="secondary">Cancel</Button>
+        <Button
+          onClick={handleClose}
+          color="secondary">Cancel</Button>
       </DialogActions>
     </Dialog>
   )

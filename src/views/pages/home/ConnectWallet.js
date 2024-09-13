@@ -31,7 +31,7 @@ const ConnectWallet = () => {
   }, [])
 
   useEffect(() => {
-    console.log('chainId', chainId)
+    // console.log('chainId', chainId)
   }, [isConnected])
 
   const handleClick = event => {

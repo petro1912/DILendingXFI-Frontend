@@ -71,15 +71,15 @@ const Markets = () => {
           <Box sx={{display: 'flex', alignItems: 'center',}}>
             <Box sx={{ml: 8}}>
               <Typography color="primary">Rewards</Typography>
-              <Typography color="primary" variant="h3">$ {statistics?.totalRewards?.toString() || '1.97B'}</Typography>
+              <Typography color="primary" variant="h3">$ {formatNumber(statistics?.totalRewards) || '1.97M'}</Typography>
             </Box>
             <Box sx={{ml: 8}}>
               <Typography color="#7367F0">Borrowing</Typography>
-              <Typography color="#7367F0" variant="h3">$ {statistics?.totalBorrows.toString() || '1.97B'}</Typography>
+              <Typography color="#7367F0" variant="h3">$ {formatNumber(statistics?.totalBorrows) || '1.97M'}</Typography>
             </Box>
             <Box sx={{ml: 8}}>
               <Typography color="secondary">Collateral</Typography>
-              <Typography variant="h3">$ {statistics?.totalCollaterals.toString() || '1.97B'}</Typography>
+              <Typography variant="h3">$ {formatNumber(statistics?.totalCollaterals) || '1.97M'}</Typography>
             </Box>
           </Box>
         </Box>
@@ -118,8 +118,8 @@ const Markets = () => {
                     >
                       <Cell scope='row'>
                         <Box sx={{display: 'flex', alignItems: 'center'}}>
-                          <img src={`/images/tokens/${getPrincipalTokenSymbol(pool).toLowerCase()}.png`} className="tokenImg"/>
-                          <Typography variant="h5">{getPrincipalTokenSymbol(pool).toUpperCase()}</Typography>
+                          <img src={`/images/tokens/${getPrincipalTokenSymbol(pool)?.toLowerCase()}.png`} className="tokenImg"/>
+                          <Typography variant="h5">{getPrincipalTokenSymbol(pool)}</Typography>
                         </Box>
                       </Cell>
                       <Cell align='right'>
@@ -138,17 +138,17 @@ const Markets = () => {
                       </Cell>
                       <Cell align='right'>
                         <Typography>
-                          $ {formatNumber(pool.totalRewards)}M
+                          $ {formatNumber(pool.totalRewards)}
                         </Typography>
                       </Cell>
                       <Cell align='right'>
                         <Typography>
-                          $ {formatNumber(pool.totalBorrowings)}M
+                          $ {formatNumber(pool.totalBorrowings)}
                         </Typography>
                       </Cell>
                       <Cell align='right'>
                         <Typography>
-                          $ {formatNumber(pool.totalCollaterals)}M
+                          $ {formatNumber(pool.totalCollaterals)}
                         </Typography>
                       </Cell>
                     </TableRow>

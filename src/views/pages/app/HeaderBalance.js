@@ -10,11 +10,22 @@ import {
 import BalanceText from '../home/BalanceText'
 import Icon from 'src/@core/components/icon'
 import { getPrincipalTokenSymbol, getTokenImgName } from 'src/wallet/utils'
+import { ethers } from 'ethers'
+import { getTokenBalance } from 'src/contracts/pool'
+import { useAccount } from 'wagmi'
+import BalanceValueText from '../home/BalanceValueText'
 
 const HeaderBalance = (props) => {
 
+  const {address, isConnected} = useAccount()
   const [anchorEl, setAnchorEl] = useState(null)
   const pools = useSelector((state) => state.pools.entities);
+  const [principalToken, setPrincipalToken] = useState()
+
+  useEffect(() => {
+    if (props.pool)
+      setPrincipalToken(props.pool.principalToken)
+  }, [props.pool])
 
 	const handleClick = event => {
 		setAnchorEl(event.currentTarget)
@@ -46,7 +57,10 @@ const HeaderBalance = (props) => {
             onClick={handleClick}>
             {
               props.pool &&
-              <img src={`/images/tokens/${getTokenImgName(props.pool.principalToken)}.png`} className='tokenImg' />
+              <img
+                src={`/images/tokens/${getTokenImgName(principalToken)}.png`}
+                className='tokenImg'
+              />
             }
             <Icon icon="tabler:caret-down" />
           </Button>
@@ -57,20 +71,28 @@ const HeaderBalance = (props) => {
             onClose={handleClose}
             open={Boolean(anchorEl)}>
             {
-                pools && pools.map((_pool, index) => (
+              pools && pools.map((_pool, index) => (
                 <MenuItem
-                    key={index}
-                    disabled={_pool == props.pool}
-                    onClick={() => selectPool(_pool)}>
-                    <img src={`/images/tokens/${getTokenImgName(_pool.principalToken)}.png`} className='tokenImg' />
-                    {getPrincipalTokenSymbol(_pool)}
+                  key={index}
+                  disabled={_pool == props.pool}
+                  onClick={() => selectPool(_pool)}>
+                  <img
+                    src={`/images/tokens/${getTokenImgName(_pool.principalToken)}.png`}
+                    className='tokenImg'
+                    />
+                  {getPrincipalTokenSymbol(_pool)}
                 </MenuItem>)
-                )
+              )
             }
           </Menu>
-          <BalanceText variant="h1" sx={{ ml: 2 }} />
+          <BalanceText
+            variant="h1"
+            sx={{ ml: 2 }}
+            token={principalToken}
+          />
         </Box>
-        <Typography variant="h6">$0.00</Typography>
+        <BalanceValueText
+          token={principalToken} />
       </Box>
   )
 }
