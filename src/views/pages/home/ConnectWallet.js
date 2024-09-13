@@ -59,7 +59,7 @@ const ConnectWallet = () => {
   if (isConnected && isClient) {
     return (
       <div>
-        <Button variant='outlined' aria-controls='simple-menu' aria-haspopup='true' onClick={handleClick}>
+        <Button variant='outlined' size='large' aria-controls='simple-menu' aria-haspopup='true' onClick={handleClick}>
           {truncateAddress(address)}
         </Button>
         <Menu keepMounted id='simple-menu' anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
@@ -81,7 +81,7 @@ const ConnectWallet = () => {
           <Icon icon='tabler:x' fontSize='1.25rem' />
         </CloseButton>
         <Box sx={{ p: 8 }}>
-          {connectors.map((connector) => (
+          {connectors.filter(connector => connector.type != 'injected').map((connector) => (
             <WalletOption
               key={connector.uid}
               connector={connector}
@@ -90,7 +90,7 @@ const ConnectWallet = () => {
           ))}
         </Box>
       </Dialog>
-      <Button variant="outlined" onClick={() => handleConnectDialogOpen()}>
+      <Button variant="outlined" size="large" onClick={() => handleConnectDialogOpen()}>
         Connect Wallet
       </Button>
     </>

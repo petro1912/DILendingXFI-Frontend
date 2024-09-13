@@ -18,7 +18,7 @@ const LinkStyled = styled(Link)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   textDecoration: 'none',
-  marginRight: theme.spacing(8),
+  marginRight: theme.spacing(10),
   textDecoration: 'none',
   color: `${theme.palette.text.secondary} !important`,
   '&:hover': {
@@ -37,17 +37,15 @@ const AppBarContent = props => {
   const router = useRouter()
   const [account, setAccount] = useState(null);
 
-  console.log(router, router.pathname)
   const activeMenuClass = (name) => {
     return router.pathname.startsWith(name) ? 'active' : ''
   }
 
-
   return (
-    <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 4}}>
+    <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', }}>
       <LinkStyled href='/'>
         <img className='logo' src="/images/logo.png" />
-        <Typography variant='h4' sx={{ ml: 2.5, fontWeight: 700, lineHeight: '24px' }}>
+        <Typography color="primary" variant='h4' sx={{ ml: 2.5, fontWeight: 700, lineHeight: '24px' }}>
           {themeConfig.appName}
         </Typography>
       </LinkStyled>
@@ -57,14 +55,15 @@ const AppBarContent = props => {
             display: 'flex',
             alignItems: 'center',
             background: '#11111122',
-            borderRadius: '20px',
-            backdropFilter: 'blur(6px)',
+            borderRadius: '30px',
+            backdropFilter: 'blur(8px)',
             mr: 26,
-            px: 8,
-            py: 2,
+            px: 10,
+            py: 3,
             border: '2px solid #00CFE8'
           }}>
           <Typography
+            variant='h5'
             sx={{mr: 6}}
             component={LinkStyled}
             className={router.pathname == '/'? 'active' : ''}
@@ -73,6 +72,7 @@ const AppBarContent = props => {
             Home
           </Typography>
           <Typography
+            variant='h5'
             sx={{mr: 6}}
             component={LinkStyled}
             className={activeMenuClass('/markets')}
@@ -81,6 +81,7 @@ const AppBarContent = props => {
             Markets
           </Typography>
           <Typography
+            variant='h5'
             sx={{mr: 6}}
             className={activeMenuClass('/governance')}
             component={LinkStyled}
@@ -89,6 +90,7 @@ const AppBarContent = props => {
             Governance
           </Typography>
           <Typography
+            variant='h5'
             target='_blank'
             sx={{mr: 6}}
             component={LinkStyled}
@@ -97,7 +99,7 @@ const AppBarContent = props => {
             Documentation
           </Typography>
           <Typography
-
+            variant='h5'
             className={activeMenuClass('/app')}
             component={LinkStyled}
             href='/app'>

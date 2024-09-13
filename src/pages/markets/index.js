@@ -83,7 +83,7 @@ const Markets = () => {
             </Box>
           </Box>
         </Box>
-        <Card sx={{ boxShadow: 4, borderRadius: 2, p: 2, color: 'common.white', backgroundColor: '#00CFF822' }}>
+        <Card sx={{ boxShadow: 4, borderRadius: 2, p: 2, color: 'common.white', backgroundColor: '#000000CC' }}>
           <CardContent sx={{ p: theme => `${theme.spacing(3.25, 5, 4.5)} !important` }}>
             <Box
               sx={{ display: 'flex', mb: 2.75, alignItems: 'center', color: 'common.white', '& svg': { mr: 2.5 } }}
@@ -119,35 +119,38 @@ const Markets = () => {
                       <Cell scope='row'>
                         <Box sx={{display: 'flex', alignItems: 'center'}}>
                           <img src={`/images/tokens/${getPrincipalTokenSymbol(pool)?.toLowerCase()}.png`} className="tokenImg"/>
-                          <Typography variant="h5">{getPrincipalTokenSymbol(pool)}</Typography>
+                          <Box>
+                            <Typography variant="h5">{getPrincipalToken(pool).name}</Typography>
+                            <Typography variant="h6" color="grey">{getPrincipalTokenSymbol(pool)}</Typography>
+                          </Box>
                         </Box>
                       </Cell>
                       <Cell align='right'>
                         <Box sx={{display: 'flex', alignItems: 'center'}}>
                           <CircularProgress size='1.8rem' variant='determinate' value={formatPercent(pool.utilization)} />
-                          <Typography sx={{ml: 4}}>
-                            {formatPercent(pool.utilization)} %
+                          <Typography variant="h5" sx={{ml: 4}}>
+                            {formatPercent(pool.utilization)}%
                           </Typography>
                         </Box>
                       </Cell>
                       <Cell align='right'>
-                        <Typography>{formatPercent(pool.earnAPR)} %</Typography>
+                        <Typography variant="h5">{formatPercent(pool.earnAPR)}%</Typography>
                       </Cell>
                       <Cell align='right'>
-                        <Typography>{formatPercent(pool.borrowAPR)} %</Typography>
+                        <Typography variant="h5">{formatPercent(pool.borrowAPR)}%</Typography>
                       </Cell>
                       <Cell align='right'>
-                        <Typography>
+                        <Typography variant="h5">
                           $ {formatNumber(pool.totalRewards)}
                         </Typography>
                       </Cell>
                       <Cell align='right'>
-                        <Typography>
+                        <Typography variant="h5">
                           $ {formatNumber(pool.totalBorrowings)}
                         </Typography>
                       </Cell>
                       <Cell align='right'>
-                        <Typography>
+                        <Typography variant="h5">
                           $ {formatNumber(pool.totalCollaterals)}
                         </Typography>
                       </Cell>

@@ -79,6 +79,7 @@ const HorizontalLayout = props => {
             backdropFilter: 'blur(6px)',
             transition: 'border-bottom 0.2s ease-in-out',
             backgroundColor: 'transparent',
+            boxShadow: 'none'
           }}
         >
           {/* Navbar / AppBar */}
@@ -91,6 +92,7 @@ const HorizontalLayout = props => {
             <Toolbar
               className='navbar-content-container'
               sx={{
+                height: '80px',
                 mx: 'auto',
                 '@media (min-width:1440px)': { maxWidth: 1440 },
                 minHeight: theme => `${theme.mixins.toolbar.minHeight - 2}px !important`

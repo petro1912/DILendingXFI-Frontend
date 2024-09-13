@@ -16,8 +16,10 @@ export default function WalletOption({
     }, [connector])
 
     return (
-        <Box
+      <Box
         sx={{
+          display: 'flex',
+          alignItems: 'center',
           border: '2px solid #00CFE888',
           background: '#111',
           borderRadius: 2,
@@ -29,9 +31,15 @@ export default function WalletOption({
             background: '#00CFE8CC'
           }
         }}
-
         onClick={onClick}>
-           <Typography variant='h4'> {connector.name}</Typography>
-        </Box>
+
+        <img
+          src={`/images/wallet/${connector.type?.toLowerCase()}.png`}
+          className='wallet-icon'
+        />
+        <Typography variant='h4'>
+          {connector.name}
+        </Typography>
+      </Box>
     )
 };

@@ -175,6 +175,13 @@ code[class*='language-'] {
   animation: loading 2s linear infinite; /* Animation for the loading effect */
 }
 
+.wallet-icon {
+  border-radius: 12px;
+  width: 40px;
+  height: 40px;
+  margin-right: 20px;
+}
+
 @keyframes loading {
   0% {
       width: 0;

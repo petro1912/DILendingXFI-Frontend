@@ -35,7 +35,7 @@ const Img = styled('img')(({ theme }) => ({
 
 const Governance = () => {
   return (
-    <Box className='content-center' sx={{mt: 18}}>
+    <Box className='content-center' sx={{mt: 30}}>
       <Box sx={{ p: 5, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
         <BoxWrapper>
           <Typography variant='h4' sx={{ mb: 6, color: 'text.secondary' }}>
@@ -45,7 +45,7 @@ const Governance = () => {
             Back to Home
           </Button>
         </BoxWrapper>
-        <Img height='500' alt='error-illustration' src='/images/pages/404.png' />
+        <Img height='400' alt='error-illustration' src='/images/pages/404.png' />
       </Box>
       <FooterIllustrations />
     </Box>
