@@ -49,7 +49,7 @@ const App = () => {
 			<BoxContainer>
 				<Box
 					sx={{
-						mt: "64px",
+						mt: "80px",
 						mb: 6
 					}}>
 					<HeaderBalance

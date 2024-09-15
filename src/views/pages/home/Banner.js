@@ -18,7 +18,7 @@ const Banner = () => {
           <Typography variant="h1">
             <font color="#00CFE8">Capital Efficiency</font> &
             <font color="#28C76F"> Staking Supported</font>, <br/>
-            <font color="#FF871F">Staking Rewards</font> to All Parties during Loans
+            <font color="#FF871F">Optimistic Rewards</font> to All Parties during Loans
           </Typography>
           <Typography variant="h4" color="secondary" sx={{mt: 4, lineHeight: '2rem'}}>
             Invest Idle borrow and collateral assets <br/>

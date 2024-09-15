@@ -1,6 +1,5 @@
 import {
   getProvider,
-  getWalletAddress,
   sendTransaction,
   connectBrowserExtensionWallet,
   TransactionStateFailed,
@@ -13,39 +12,30 @@ import { ERC20_ABI } from './constant';
 const AbiInterface = new ethers.Interface(ABI_POOL.abi);
 
 const getProviderOrConnect = async () => {
-  const provider = getProvider()
-  const address = getWalletAddress()
+  const {provider, address} = getProvider()
   if (!provider || !address) {
-    if (await connectBrowserExtensionWallet())
+    if (await connectBrowserExtensionWallet()) {
       return getProvider()
+    }
   }
 
-  return provider
+  return {provider, address}
 }
 
-export async function getTokenTransferApproval(
+async function getTokenTransferApproval(
   tokenAddress,
   spender,
   amount
 ) {
-  const provider = getProvider()
-  const address = getWalletAddress()
-  if (!provider || !address) {
-    console.log('No Provider Found')
-    return TransactionStateFailed
-  }
-
   try {
+    const {provider, address} = getProvider()
     const tokenContract = new ethers.Contract(
       tokenAddress,
       ERC20_ABI,
       provider
     )
 
-    const transaction = await tokenContract.approve.populateTransaction(
-      spender,
-      amount
-    )
+    const transaction = await tokenContract.approve.populateTransaction(spender, amount)
 
     return sendTransaction({
       ...transaction,
@@ -58,8 +48,7 @@ export async function getTokenTransferApproval(
 }
 
 export const supplyTransaction = async (poolAddress, tokenAddress, amount, minCredit) => {
-  const provider = getProviderOrConnect();
-  const address = getWalletAddress()
+  const {provider, address} = await getProviderOrConnect();
   if (!address || !provider) {
     return TransactionStateFailed
   }
@@ -73,7 +62,7 @@ export const supplyTransaction = async (poolAddress, tokenAddress, amount, minCr
   if (
     tokenApproval !== TransactionStateSent
   ) {
-    return TransactionStateFailed
+    return tokenApproval
   }
 
   const calldata = AbiInterface.encodeFunctionData('supply', [amount, minCredit])
@@ -87,14 +76,13 @@ export const supplyTransaction = async (poolAddress, tokenAddress, amount, minCr
 }
 
 
-export const borrowTransaction = async (poolAddress, amount) => {
-  const provider = getProviderOrConnect();
-  const address = getWalletAddress()
+export const supplyWithdrawTransaction = async (poolAddress, amount) => {
+  const {provider, address} = await getProviderOrConnect();
   if (!address || !provider) {
     return TransactionStateFailed
   }
 
-  const calldata = AbiInterface.encodeFunctionData('borrow', [amount])
+  const calldata = AbiInterface.encodeFunctionData('supplyWithdraw', [amount])
 
   return sendTransaction({
     data: calldata,
@@ -104,9 +92,23 @@ export const borrowTransaction = async (poolAddress, amount) => {
 
 }
 
+export const borrowTransaction = async (poolAddress, amount) => {
+  const {provider, address} = getProviderOrConnect();
+  if (!address || !provider) {
+    return TransactionStateFailed
+  }
+
+  const calldata = AbiInterface.encodeFunctionData('borrow', [amount])
+  return sendTransaction({
+    data: calldata,
+    to: poolAddress,
+    from: address,
+  })
+
+}
+
 export const depositTransaction = async (poolAddress, tokenAddress, amount) => {
-  const provider = getProviderOrConnect();
-  const address = getWalletAddress()
+  const {provider, address} = await getProviderOrConnect();
   if (!address || !provider) {
     return TransactionStateFailed
   }
@@ -120,7 +122,7 @@ export const depositTransaction = async (poolAddress, tokenAddress, amount) => {
   if (
     tokenApproval !== TransactionStateSent
   ) {
-    return TransactionStateFailed
+    return tokenApproval
   }
 
   const calldata = AbiInterface.encodeFunctionData('depositCollateral', [tokenAddress, amount])
@@ -130,12 +132,10 @@ export const depositTransaction = async (poolAddress, tokenAddress, amount) => {
     to: poolAddress,
     from: address,
   })
-
 }
 
 export const withdrawTransaction = async (poolAddress, tokenAddress, amount) => {
-  const provider = getProviderOrConnect();
-  const address = getWalletAddress()
+  const {provider, address} = getProviderOrConnect()
   if (!address || !provider) {
     return TransactionStateFailed
   }

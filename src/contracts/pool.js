@@ -130,3 +130,21 @@ export const getTokenPrice = async (tokenAddress) => {
     console.error('Error calling view function:', error);
   }
 }
+
+export const getUserCreditPositions = async (address) => {
+  try {
+    const positions = await factoryContract().getUserCreditPositions(address);
+  return positions;
+  } catch (error) {
+    console.error('Error calling view function:', error);
+  }
+}
+
+export const getUserDebtPositions = async (address) => {
+  try {
+    const positions = await factoryContract().getUserDebtPositions(address);
+  return positions;
+  } catch (error) {
+    console.error('Error calling view function:', error);
+  }
+}

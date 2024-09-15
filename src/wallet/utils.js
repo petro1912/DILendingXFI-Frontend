@@ -4,13 +4,18 @@ import { ethers } from 'ethers';
 export const ACTION_DEPOSIT = "deposit"
 export const ACTION_WITHDRAW = "withdraw"
 
+export const ACTION_SUPPLY = "supply"
+export const ACTION_SUPPLY_WITHDRAW = "supply withdraw"
+export const ACTION_BORROW = "borrow"
+export const ACTION_REPAY = "repay"
+
 export const truncateAddress = (address) => {
   if (!address) return "No Account";
   const match = address.match(
-    /^(0x[a-zA-Z0-9]{2})[a-zA-Z0-9]+([a-zA-Z0-9]{2})$/
+    /^(0x[a-zA-Z0-9]{2})[a-zA-Z0-9]+([a-zA-Z0-9]{4})$/
   );
   if (!match) return address;
-  return `${match[1]}…${match[2]}`;
+  return `${match[1]}⋯${match[2]}`;
 };
 
 export const toHex = (num) => {
@@ -80,6 +85,13 @@ export const formatNumber = (bigNumberValue) => {
     return 0
 
   return ethers.formatEther(bigNumberValue, 18);
+}
+
+export const formatNumber6 = (bigNumberValue) => {
+  if (typeof bigNumberValue != 'bigint')
+    return 0
+
+  return ethers.formatEther(bigNumberValue, 6);
 }
 
 export const formatPrice = (bigNumberValue) => {

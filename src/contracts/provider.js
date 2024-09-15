@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
 
 const browserExtensionProvider = createBrowserExtensionProvider()
-let walletExtensionAddress
+let browserExtensionAddress
 
 // Interfaces
 export const TransactionStateFailed = 'Failed'
@@ -13,11 +13,10 @@ export const TransactionStateSent = 'Sent'
 // Provider and Wallet Functions
 
 export function getProvider() {
-  return browserExtensionProvider
-}
-
-export function getWalletAddress() {
-  return walletExtensionAddress
+  return {
+    provider: browserExtensionProvider,
+    address: browserExtensionAddress
+  }
 }
 
 export async function sendTransaction(
@@ -39,8 +38,8 @@ export async function connectBrowserExtensionWallet() {
     return
   }
 
-  walletExtensionAddress = accounts[0]
-  return walletExtensionAddress
+  browserExtensionAddress = accounts[0]
+  return browserExtensionAddress
 }
 
 export function createBrowserExtensionProvider() {
@@ -61,6 +60,7 @@ async function sendTransactionViaExtension(
       'eth_sendTransaction',
       [transaction]
     )
+
     if (receipt) {
       return TransactionStateSent
     } else {

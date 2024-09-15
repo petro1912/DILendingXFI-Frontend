@@ -3,10 +3,9 @@ import { ethers } from 'ethers'
 import Box from '@mui/material/Box'
 import Fab from '@mui/material/Fab'
 import Typography from "@mui/material/Typography"
-import Card from "@mui/material/Card"
-import CardContent from "@mui/material/CardContent"
 import Icon from 'src/@core/components/icon'
 import UnderlineInput from 'src/@core/components/UnderlineInput';
+import SectionCard from '../SectionCard'
 import { useAccount } from 'wagmi'
 import { formatPercent, getTokenImgName, getTokenSymbol, isOnlyNumber } from 'src/wallet/utils'
 import toast from 'react-hot-toast'
@@ -99,24 +98,30 @@ const SupplyBorrow = (props) => {
   const isWalletEmpty = !isConnected || !balance || parseFloat(balance) == 0
 
   return (
-    <Card sx={{ boxShadow: 12, borderRadius: 2, p: 1, color: 'common.white', backgroundColor: '#000000', mb: 6 }}>
-      <CardContent sx={{ p: theme => `${theme.spacing(3.25, 5, 4.5)} !important` }}>
-        <Typography color="primary" variant='h6' sx={{ my: 2 }}>
-          Wallet Balance
-        </Typography>
-        <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-          {
-            props.pool &&
-            <img
-              src={`/images/tokens/${getTokenImgName(props.pool.principalToken)}.png`}
-              className='tokenImg small' />
-          }
-          <Typography variant='h4' sx={{ }}>
-            {balance} {props.pool && getTokenSymbol(props.pool.principalToken)}
-          </Typography>
-        </Box>
-        {
-          props.pool && <>
+    <SectionCard title="Wallet Balance">
+      {
+        props.pool?
+        <>
+          <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+            <Box sx={{display: 'flex'}}>
+              <img
+                src={`/images/tokens/${getTokenImgName(props.pool.principalToken)}.png`}
+                className='tokenImg small' />
+              <Typography variant='h4'>
+                {props.pool && getTokenSymbol(props.pool.principalToken)}
+              </Typography>
+            </Box>
+
+            <Typography variant='h4' sx={{ }}>
+              {balance}
+            </Typography>
+          </Box>
+          <Box>
+            <Typography variant='h6' color="secondary" sx={{textAlign: 'right', mb: 2}}>
+              ${balance * price}
+            </Typography>
+          </Box>
+          <Box>
             <UnderlineInput
               value={amount}
               onChange={handleAmountChange}
@@ -125,9 +130,9 @@ const SupplyBorrow = (props) => {
               disabled={isWalletEmpty}
               />
 
-          <Typography color="grey" sx={{textAlign: 'right', my: 2}}>
-            $ { amount && price ? (price * parseFloat (amount)).toFixed(2) : '0' }
-          </Typography>
+            <Typography color="grey" sx={{textAlign: 'right', my: 2}}>
+              $ { amount && price ? (price * parseFloat (amount)).toFixed(2) : '0' }
+            </Typography>
 
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mt: 4}}>
               <Fab
@@ -147,29 +152,29 @@ const SupplyBorrow = (props) => {
                 <Icon icon="tabler:circle-plus-filled" /> Borrow
               </Fab>
             </Box>
-          </>
-        }
-        <Box sx={{ p: 3, mt: 6, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderRadius: 1, backgroundColor: '#00CFE822' }}>
-          <Box>
-            <Typography variant='h6' color="grey" sx={{ mr: 2, mb: 2 }}>
-              Net Borrow APR
-            </Typography>
-            <Typography variant='h5' sx={{ mr: 2 }}>
-              {formatPercent(props.pool?.borrowAPR)} %
-            </Typography>
           </Box>
-          <Box sx={{ textAlign: 'right' }}>
-            <Typography variant='h6' color="grey" sx={{ mr: 2, mb: 2 }}>
-              Net Supply APR
-            </Typography>
-            <Typography variant='h5' sx={{ mr: 2 }}>
-              {formatPercent(props.pool?.earnAPR)} %
-            </Typography>
-          </Box>
+        </> : <Typography color="grey"></Typography>
+      }
+      <Box sx={{ p: 3, mt: 6, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderRadius: 1, backgroundColor: '#00CFE822' }}>
+        <Box>
+          <Typography variant='h6' color="grey" sx={{ mr: 2, mb: 2 }}>
+            Net Borrow APR
+          </Typography>
+          <Typography variant='h5' sx={{ mr: 2 }}>
+            {formatPercent(props.pool?.borrowAPR)} %
+          </Typography>
         </Box>
+        <Box sx={{ textAlign: 'right' }}>
+          <Typography variant='h6' color="grey" sx={{ mr: 2, mb: 2 }}>
+            Net Supply APR
+          </Typography>
+          <Typography variant='h5' sx={{ mr: 2 }}>
+            {formatPercent(props.pool?.earnAPR)} %
+          </Typography>
+        </Box>
+      </Box>
 
-      </CardContent>
-    </Card>
+    </SectionCard>
   )
 }
 
