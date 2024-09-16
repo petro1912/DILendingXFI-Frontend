@@ -12,7 +12,7 @@ import { getTokenPrice, getTokenDecimals, getTokenValue } from "src/contracts/po
 import { useAccount } from "wagmi"
 import toast from "react-hot-toast"
 import { ethers } from "ethers"
-import { supplyTransaction, supplyWithdrawTransaction } from "src/contracts/actions"
+import { borrowTransaction, repayTransaction } from "src/contracts/actions"
 
 
 const DebtDialog = (props) => {
@@ -73,9 +73,9 @@ const DebtDialog = (props) => {
 
   const handleAction = () => {
     if (action == ACTION_BORROW) {
-      supplyAction()
+      borrowAction()
     } else {
-      withdrawAction()
+      repayAction()
     }
   }
 
@@ -93,7 +93,7 @@ const DebtDialog = (props) => {
     setAmount(getAvailableAmount())
   }
 
-  const supplyAction = async () => {
+  const borrowAction = async () => {
     const _amount = parseFloat(amount)
     const _balance = parseFloat(balance)
     if (!_amount || _amount > _balance) {
@@ -103,9 +103,8 @@ const DebtDialog = (props) => {
 
     const decimals = await getTokenDecimals(token)
     const formatAmount = ethers.parseUnits(_amount.toString(), decimals)
-    const formatCredit = ethers.parseUnits('0', decimals)
 
-    supplyTransaction(poolAddress, formatAmount, formatCredit)
+    borrowTransaction(poolAddress, tokenAddress, formatAmount)
       .then(res => {
         console.log(res)
       })
@@ -115,7 +114,7 @@ const DebtDialog = (props) => {
 
   }
 
-  const withdrawAction = async () => {
+  const repayAction = async () => {
     const _amount = parseFloat(amount)
     const _balance = parseFloat(balance)
     if (!_amount || _amount > _balance) {
@@ -126,7 +125,7 @@ const DebtDialog = (props) => {
     const decimals = await getTokenDecimals(token)
     const formatAmount = ethers.parseUnits(_amount.toString(), decimals)
 
-    supplyWithdrawTransaction(poolAddress, formatAmount)
+    repayTransaction(poolAddress, formatAmount)
       .then(res => {
         console.log(res)
       })

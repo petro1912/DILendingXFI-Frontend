@@ -9,18 +9,32 @@ import {
 } from '@mui/material'
 import BalanceText from '../home/BalanceText'
 import Icon from 'src/@core/components/icon'
-import { getPrincipalTokenSymbol, getTokenImgName } from 'src/wallet/utils'
+import { getPrincipalTokenSymbol, getTokenImgName, toFixed, toFloat } from 'src/wallet/utils'
 import BalanceValueText from '../home/BalanceValueText'
+import { getTokenPrice } from 'src/contracts/pool'
 
 const HeaderBalance = (props) => {
 
   const [anchorEl, setAnchorEl] = useState(null)
   const pools = useSelector((state) => state.pools.entities);
-  const [principalToken, setPrincipalToken] = useState()
+  const [tokenPrice, setTokenPrice] = useState(0)
+
+  const {
+    principalToken,
+    totalDeposits,
+    totalBorrows,
+  } = props.pool
+
+  const {creditPosition} = props
 
   useEffect(() => {
-    if (props.pool)
-      setPrincipalToken(props.pool.principalToken)
+    if (props.pool) {
+      getTokenPrice(principalToken)
+        .then(value => {
+          setTokenPrice(value)
+        })
+    }
+
   }, [props.pool])
 
 	const handleClick = event => {
@@ -38,13 +52,20 @@ const HeaderBalance = (props) => {
 
   return (
     <Box>
-      <Typography color="primary">Balance</Typography>
+      <Typography color="primary">Protocol Balance</Typography>
       <Box
+        sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+        }}>
+        <Box
         sx={{
         display: 'flex',
         alignItems: 'center',
         mb: 2
       }}>
+
           <Button
             variant='outlined'
             size="small"
@@ -81,15 +102,28 @@ const HeaderBalance = (props) => {
               )
             }
           </Menu>
-          <BalanceText
+          <Typography
             variant="h1"
-            sx={{ ml: 2 }}
-            token={principalToken}
-          />
+            sx={{ ml: 2 }}>
+              {props.pool && toFixed(totalDeposits - totalBorrows)}
+          </Typography>
+
+
         </Box>
-        <BalanceValueText
-          token={principalToken} />
+        <Box>
+          <Typography color="primary">Supply to Protocol</Typography>
+          <Typography variant="h3" textAlign="right">{creditPosition && toFixed(creditPosition.liquidityAmount)}</Typography>
+        </Box>
       </Box>
+      <Box sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+        }}>
+        <Typography>${props.pool && toFixed(toFloat(totalDeposits - totalBorrows) * tokenPrice)}</Typography>
+        <Typography>${props.pool && creditPosition && toFixed(creditPosition.liquidityAmount) * tokenPrice}</Typography>
+      </Box>
+    </Box>
   )
 }
 

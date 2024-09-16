@@ -10,18 +10,21 @@ import SupplyBorrow from 'src/views/pages/app/SupplyBorrow';
 import Collaterals from 'src/views/pages/app/Collaterals';
 import HeaderBalance from 'src/views/pages/app/HeaderBalance';
 import { useSelector, useDispatch } from 'react-redux';
-import { useReadContract } from "wagmi"
+import { useAccount, useReadContract } from "wagmi"
 import { FACTORY_ADDRESS } from "src/contracts/tokens"
 import ABI_FACTORY from 'src/contracts/artifacts/LendingPoolFactory.json'
 import { setPoolsInfo } from "src/redux/poolsSlice"
 import { createBrowserExtensionProvider } from 'src/contracts/provider';
+import { getUserCreditPositions } from 'src/contracts/pool';
 
 const App = () => {
 
   const dispatch = useDispatch();
 
-  const [pool, setPool] = useState();
-  const pools = useSelector((state) => state.pools.entities);
+  const [pool, setPool] = useState()
+  const {address, isConnected} = useAccount()
+  const pools = useSelector((state) => state.pools.entities)
+  const [creditPositions, setCreditPositions] = useState([])
 
   const {data: pools_data} = useReadContract({
     address: FACTORY_ADDRESS,
@@ -41,8 +44,18 @@ const App = () => {
   useEffect(() => {
     if (pools && pools.length != 0) {
       setPool(pools[0])
+      if (address) {
+        getUserCreditPositions(address)
+          .then(value => {
+            if (value && value.length != 0) {
+              setCreditPositions(value)
+            }
+          })
+      }
     }
   }, [pools])
+
+  const creditPositionByPool = (poolAddress) => creditPositions && creditPositions.find(pos => pos.poolAddress == poolAddress)
 
 	return (
 		<>
@@ -52,10 +65,13 @@ const App = () => {
 						mt: "80px",
 						mb: 6
 					}}>
-					<HeaderBalance
-            pool={pool}
-            setPool={setPool}
-					/>
+					{
+            pool && <HeaderBalance
+              pool={pool}
+              setPool={setPool}
+              creditPosition = {creditPositionByPool(pool?.poolAddress)}
+            />
+          }
 				</Box>
 
 				<Grid

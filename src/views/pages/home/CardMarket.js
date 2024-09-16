@@ -5,20 +5,22 @@ import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 import { useEffect, useState } from 'react'
 import { TOKENS } from 'src/contracts/tokens'
+import { formatNumber, toConcise } from 'src/wallet/utils'
 
 
 const CardMarket = (props) => {
 
   const [principalToken, setPrincipalToken] = useState()
+  const {pool} = props
 
   useEffect(() => {
-    if (props.pool && props.pool.principalToken) {
-      const token_address = props.pool.principalToken;
+    if (pool && pool.principalToken) {
+      const token_address = pool.principalToken;
       const _principalToken = TOKENS.find(token => token.address == token_address);
 
       setPrincipalToken(_principalToken)
     }
-  }, [props.pool])
+  }, [pool])
 
 
   return (
@@ -37,15 +39,15 @@ const CardMarket = (props) => {
         <Box sx={{ m: 2 }}>
           <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between'}}>
             <Typography sx={{ color: '#00CFE8' }}>Market Size: </Typography>
-            <Typography sx={{ color: '#00CFE8', fontWeight: 'bold' }}>{props.pool?.totalDeposits.toString()} USD</Typography>
+            <Typography sx={{ color: '#00CFE8', fontWeight: 'bold' }}>${toConcise(pool.totalDeposits)}</Typography>
           </Box>
           <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between'}}>
             <Typography sx={{ color: '#7367F0' }}>Total Borrows: </Typography>
-            <Typography sx={{ color: '#7367F0', fontWeight: 'bold' }}>{props.pool?.totalBorrows.toString()} USD</Typography>
+            <Typography sx={{ color: '#7367F0', fontWeight: 'bold' }}>${toConcise(pool.totalBorrows)}</Typography>
           </Box>
           <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
             <Typography sx={{ color: '#FF871F' }}>Available: </Typography>
-            <Typography sx={{ color: '#FF871F', fontWeight: 'bold' }}>{props.pool ? (props.pool.totalDeposits - props.pool.totalBorrows).toString() : '--' } USD</Typography>
+            <Typography sx={{ color: '#FF871F', fontWeight: 'bold' }}>${pool ? formatNumber(pool.totalDeposits - pool.totalBorrows) : '--' }</Typography>
           </Box>
           {/* <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
             <Typography sx={{ color: '#FF871F' }}>APR: </Typography>

@@ -7,10 +7,10 @@ import Icon from 'src/@core/components/icon'
 import UnderlineInput from 'src/@core/components/UnderlineInput';
 import SectionCard from '../SectionCard'
 import { useAccount } from 'wagmi'
-import { formatPercent, getTokenImgName, getTokenSymbol, isOnlyNumber } from 'src/wallet/utils'
+import { formatPercent, getTokenImgName, getTokenSymbol, isOnlyNumber, toFixed, toFloat } from 'src/wallet/utils'
 import toast from 'react-hot-toast'
-import { getTokenBalance, getTokenDecimals, getTokenPrice } from 'src/contracts/pool'
-import { supplyTransaction } from 'src/contracts/actions'
+import { getTokenBalance, getTokenDecimals, getTokenPrice, getUserCollateralsInfo } from 'src/contracts/pool'
+import { borrowTransaction, supplyTransaction } from 'src/contracts/actions'
 
 const SupplyBorrow = (props) => {
 
@@ -18,9 +18,22 @@ const SupplyBorrow = (props) => {
   const [balance, setBalance] = useState()
   const [price, setPrice] = useState()
   const [amount, setAmount] = useState('')
+  const [collateralValue, setCollateralValue] = useState()
 
   useEffect(() => {
     if (props.pool && address) {
+      if (address) {
+        getUserCollateralsInfo(props.pool.poolAddress, address)
+          .then(value => {
+            const collateralsInfo = value
+            let _collateralValue = 0
+            for (let collateral of collateralsInfo.collaterals) {
+              console.log( toFixed(collateral.value))
+              _collateralValue += toFloat(collateral.value)
+            }
+            setCollateralValue(_collateralValue)
+          })
+      }
       getTokenBalance(props.pool.principalToken, address)
         .then(value => {
           setBalance(value)
@@ -96,7 +109,7 @@ const SupplyBorrow = (props) => {
   }
 
   const isWalletEmpty = !isConnected || !balance || parseFloat(balance) == 0
-
+  const isCollateralEmpty = !isConnected || !collateralValue || collateralValue == 0
   return (
     <SectionCard title="Wallet Balance">
       {
@@ -113,12 +126,12 @@ const SupplyBorrow = (props) => {
             </Box>
 
             <Typography variant='h4' sx={{ }}>
-              {balance}
+              {toFixed(balance)}
             </Typography>
           </Box>
           <Box>
             <Typography variant='h6' color="secondary" sx={{textAlign: 'right', mb: 2}}>
-              ${balance * price}
+              ${toFixed(balance * price)}
             </Typography>
           </Box>
           <Box>
@@ -127,7 +140,7 @@ const SupplyBorrow = (props) => {
               onChange={handleAmountChange}
               label="Amount"
               fullWidth
-              disabled={isWalletEmpty}
+              disabled={isWalletEmpty && isCollateralEmpty}
               />
 
             <Typography color="grey" sx={{textAlign: 'right', my: 2}}>
@@ -144,7 +157,7 @@ const SupplyBorrow = (props) => {
                 <Icon icon="tabler:circle-plus-filled" /> Supply
               </Fab>
               <Fab
-                disabled={isWalletEmpty}
+                disabled={isCollateralEmpty}
                 color="info"
                 variant="extended"
                 sx={{ ml: 4, '& svg': { mr: 1 } }}

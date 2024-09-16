@@ -1,4 +1,5 @@
 import {
+  Button,
   Grid, Typography
 } from '@mui/material'
 import SectionCard from '../SectionCard'
@@ -13,6 +14,7 @@ const CreditPositions = (props) => {
 
   const {address, isConnected} = useAccount()
   const [positions, setPositions] = useState([])
+  const [showAsToken, setShowAsToken] = useState(true)
 
   const [action, setAction] = useState()
   const [actionPosition, setActionPosition] = useState({})
@@ -23,9 +25,21 @@ const CreditPositions = (props) => {
       getUserCreditPositions(address)
         .then(value => {
           if (value && value.length != 0) {
-            setPositions(value/*.filter(v => {
-              return v.liquidityAmount != 0n
-            })*/)
+            const filteredPositions = value/*.filter(v => {
+              return v.liquidityValue != 0n
+            })*/
+
+            const summary = {
+              liquidityValue: 0n,
+              cashValue: 0n,
+              earnedValue: 0n
+            }
+            for (let position of filteredPositions) {
+              summary.liquidityValue += position.liquidityValue
+              summary.cashValue += position.cashValue
+              summary.earnedValue += position.earnedValue
+            }
+            setPositions([summary, ...filteredPositions])
           }
 
         })
@@ -42,8 +56,18 @@ const CreditPositions = (props) => {
     setOpenCreditModal(false)
   }
 
+  const toggleMode = () => {
+    setShowAsToken(!showAsToken)
+  }
+
   return (
-    <SectionCard title="Liquidity Positions">
+    <SectionCard
+      title="Liquidity Positions"
+      action={
+        <Button onClick={toggleMode}>
+          { showAsToken ? 'Token' : 'USD' }
+        </Button>
+      }>
       <Grid
         sx={{mt: 2}}
         container
@@ -55,6 +79,7 @@ const CreditPositions = (props) => {
             <Grid key={idx} item xs={12} sm={6} md={4}>
               <PositionCard isSummary={idx == 0}>
                 <CreditPositionInfo
+                  showAsToken={showAsToken}
                   openModal={openDialog}
                   position={position}
                   idx={idx}

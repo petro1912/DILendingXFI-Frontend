@@ -6,7 +6,7 @@ import { styled } from '@mui/material/styles'
 import BoxContainer from "src/@core/components/container"
 import MarketSwiper from "src/views/pages/home/MarketSwiper"
 import { useEffect, useState } from 'react'
-import { calcStatistics, formatNumber } from 'src/wallet/utils'
+import { calcStatistics, formatNumber, toConcise, toFixed } from 'src/wallet/utils'
 import { useSelector } from 'react-redux'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
@@ -47,15 +47,15 @@ const MarketSection = (props) => {
             <Grid container spacing={6}>
               <Grid item xs={12} sm={6} md={4}>
                 <Typography sx={{textAlign: 'center'}} variant="h2">Total Market size</Typography>
-                <Typography sx={{textAlign: 'center'}} variant="h2">$ {formatNumber(statistics?.totalDeposits)}</Typography>
+                <Typography sx={{textAlign: 'center'}} variant="h2">$ {toConcise(statistics?.totalDeposits)}</Typography>
               </Grid>
               <Grid item xs={12} sm={6} md={4}>
                 <Typography sx={{textAlign: 'center'}} variant="h2">Total Borrows</Typography>
-                <Typography sx={{textAlign: 'center'}} variant="h2">$ {formatNumber(statistics?.totalBorrows)}</Typography>
+                <Typography sx={{textAlign: 'center'}} variant="h2">$ {toConcise(statistics?.totalBorrows)}</Typography>
               </Grid>
               <Grid item xs={12} sm={6} md={4}>
                 <Typography sx={{textAlign: 'center'}} variant="h2">Total Collaterals</Typography>
-                <Typography sx={{textAlign: 'center'}} variant="h2">$ {formatNumber(statistics?.totalCollaterals)}</Typography>
+                <Typography sx={{textAlign: 'center'}} variant="h2">$ {toConcise(statistics?.totalCollaterals)}</Typography>
               </Grid>
             </Grid>
           </div>

@@ -14,7 +14,7 @@ import { styled } from '@mui/material/styles'
 import FooterIllustrations from "src/views/pages/misc/FooterIllustrations"
 import { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { calcStatistics, formatNumber, formatPercent, getPrincipalToken, getPrincipalTokenSymbol } from "src/wallet/utils"
+import { calcStatistics, formatNumber, formatPercent, getPrincipalToken, getPrincipalTokenSymbol, toFixed } from "src/wallet/utils"
 import { useReadContract } from "wagmi"
 import { FACTORY_ADDRESS } from "src/contracts/tokens"
 import ABI_FACTORY from 'src/contracts/artifacts/LendingPoolFactory.json'
@@ -46,7 +46,7 @@ const Markets = () => {
     if (!pools || pools.length == 0)
       return
 
-      setStatistics(calcStatistics(pools))
+    setStatistics(calcStatistics(pools))
   }, [pools])
 
   const goMarket = (pool) => {
@@ -66,20 +66,20 @@ const Markets = () => {
           }}>
           <Box>
             <Typography color="secondary">Total Supply</Typography>
-            <Typography variant="h4">$ {statistics?.totalDeposits.toString() || '1.97B'}</Typography>
+            <Typography variant="h4">${toFixed(statistics?.totalDeposits) || '1.97B'}</Typography>
           </Box>
           <Box sx={{display: 'flex', alignItems: 'center',}}>
             <Box sx={{ml: 8}}>
               <Typography color="primary">Rewards</Typography>
-              <Typography color="primary" variant="h3">$ {formatNumber(statistics?.totalRewards) || '1.97M'}</Typography>
+              <Typography color="primary" variant="h3">${toFixed(statistics?.totalRewards)}</Typography>
             </Box>
             <Box sx={{ml: 8}}>
               <Typography color="#7367F0">Borrowing</Typography>
-              <Typography color="#7367F0" variant="h3">$ {formatNumber(statistics?.totalBorrows) || '1.97M'}</Typography>
+              <Typography color="#7367F0" variant="h3">${toFixed(statistics?.totalBorrows)}</Typography>
             </Box>
             <Box sx={{ml: 8}}>
               <Typography color="secondary">Collateral</Typography>
-              <Typography variant="h3">$ {formatNumber(statistics?.totalCollaterals) || '1.97M'}</Typography>
+              <Typography variant="h3">${toFixed(statistics?.totalCollaterals)}</Typography>
             </Box>
           </Box>
         </Box>
@@ -98,6 +98,7 @@ const Markets = () => {
                   <TableCell align='right'>Utilization</TableCell>
                   <TableCell align='right'>Net Earn APR</TableCell>
                   <TableCell align='right'>Net Borrow APR</TableCell>
+                  <TableCell align='right'>Total Liquidity</TableCell>
                   <TableCell align='right'>Total Earning</TableCell>
                   <TableCell align='right'>Total Borrowing</TableCell>
                   <TableCell align='right'>Total Collateral</TableCell>
@@ -127,9 +128,9 @@ const Markets = () => {
                       </Cell>
                       <Cell align='right'>
                         <Box sx={{display: 'flex', alignItems: 'center'}}>
-                          <CircularProgress size='1.8rem' variant='determinate' value={formatPercent(pool.utilization)} />
+                          <CircularProgress size='1.8rem' variant='determinate' value={formatPercent(pool.utilizationRate)} />
                           <Typography variant="h5" sx={{ml: 4}}>
-                            {formatPercent(pool.utilization)}%
+                            {formatPercent(pool.utilizationRate)}%
                           </Typography>
                         </Box>
                       </Cell>
@@ -141,17 +142,22 @@ const Markets = () => {
                       </Cell>
                       <Cell align='right'>
                         <Typography variant="h5">
-                          $ {formatNumber(pool.totalRewards)}
+                          $ {toFixed(pool.totalDeposits)}
                         </Typography>
                       </Cell>
                       <Cell align='right'>
                         <Typography variant="h5">
-                          $ {formatNumber(pool.totalBorrowings)}
+                          $ {toFixed(pool.totalEarnings)}
                         </Typography>
                       </Cell>
                       <Cell align='right'>
                         <Typography variant="h5">
-                          $ {formatNumber(pool.totalCollaterals)}
+                          $ {toFixed(pool.totalBorrows)}
+                        </Typography>
+                      </Cell>
+                      <Cell align='right'>
+                        <Typography variant="h5">
+                          $ {toFixed(pool.totalCollaterals)}
                         </Typography>
                       </Cell>
                     </TableRow>

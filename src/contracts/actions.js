@@ -93,10 +93,13 @@ export const supplyWithdrawTransaction = async (poolAddress, amount) => {
 }
 
 export const borrowTransaction = async (poolAddress, amount) => {
-  const {provider, address} = getProviderOrConnect();
+  console.log(poolAddress, amount)
+  const {provider, address} = await getProviderOrConnect();
   if (!address || !provider) {
     return TransactionStateFailed
   }
+
+  console.log('here')
 
   const calldata = AbiInterface.encodeFunctionData('borrow', [amount])
   return sendTransaction({
@@ -105,6 +108,33 @@ export const borrowTransaction = async (poolAddress, amount) => {
     from: address,
   })
 
+}
+
+export const repayTransaction = async (poolAddress, tokenAddress, amount) => {
+  const {provider, address} = await getProviderOrConnect();
+  if (!address || !provider) {
+    return TransactionStateFailed
+  }
+
+  const tokenApproval = await getTokenTransferApproval(
+    tokenAddress,
+    poolAddress,
+    amount
+  )
+
+  if (
+    tokenApproval !== TransactionStateSent
+  ) {
+    return tokenApproval
+  }
+
+  const calldata = AbiInterface.encodeFunctionData('repay', [amount])
+
+  return sendTransaction({
+    data: calldata,
+    to: poolAddress,
+    from: address,
+  })
 }
 
 export const depositTransaction = async (poolAddress, tokenAddress, amount) => {

@@ -100,11 +100,11 @@ const LiquidityDialog = (props) => {
       return
     }
 
-    const decimals = await getTokenDecimals(token)
+    const decimals = await getTokenDecimals(tokenAddress)
     const formatAmount = ethers.parseUnits(_amount.toString(), decimals)
     const formatCredit = ethers.parseUnits('0', decimals)
 
-    supplyTransaction(poolAddress, formatAmount, formatCredit)
+    supplyTransaction(poolAddress, tokenAddress, formatAmount, formatCredit)
       .then(res => {
         console.log(res)
       })
@@ -122,7 +122,7 @@ const LiquidityDialog = (props) => {
       return
     }
 
-    const decimals = await getTokenDecimals(token)
+    const decimals = await getTokenDecimals(tokenAddress)
     const formatAmount = ethers.parseUnits(_amount.toString(), decimals)
 
     supplyWithdrawTransaction(poolAddress, formatAmount)

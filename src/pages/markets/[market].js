@@ -21,7 +21,7 @@ import { useState, useEffect } from 'react';
 import { FACTORY_ADDRESS } from 'src/contracts/tokens';
 import ABI_FACTORY from 'src/contracts/artifacts/LendingPoolFactory.json'
 import { getPoolCollateralsInfo, getTokenPrice } from 'src/contracts/pool';
-import { formatNumber, formatPercent, formatPrice, getTokenSymbol } from 'src/wallet/utils';
+import { formatNumber, formatPercent, formatPrice, getTokenSymbol, toConcise, toFixed } from 'src/wallet/utils';
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -74,7 +74,6 @@ const MarketPage = () => {
         })
   }, [pool])
 
-  // if (!market) return null;
 
   return (
       <BoxContainer>
@@ -101,11 +100,11 @@ const MarketPage = () => {
         <Grid container spacing={6} sx={{mb: 4}}>
           <Grid item xs={12} sm={6} md={6}>
             <Typography variant="h6" color='secondary'>Total Collateral</Typography>
-            <Typography variant="h3" color='primary'>${ pool && formatNumber(pool.totalCollaterals)} </Typography>
+            <Typography variant="h3" color='primary'>${ pool && toConcise(pool.totalCollaterals)} </Typography>
           </Grid>
           <Grid item xs={12} sm={6} md={6}>
             <Typography variant="h6" color='secondary'>Total Borrowing</Typography>
-            <Typography variant="h3" color='#7367F0'>${ pool && formatNumber(pool.totalBorrows)} </Typography>
+            <Typography variant="h3" color='#7367F0'>${ pool && toConcise(pool.totalBorrows)} </Typography>
           </Grid>
         </Grid>
         <Card sx={{ boxShadow: 4, borderRadius: 1, p: 1, mb: 4, color: 'common.white', backgroundColor: '#00CFF811' }}>
@@ -124,25 +123,25 @@ const MarketPage = () => {
                 <Box sx={{mr: 6}}>
                   <Typography variant="h6" color='secondary'>Available Liquidity</Typography>
                   <Typography variant="h4" color='white'>
-                    ${pool && formatNumber(pool.totalDeposits - pool.totalBorrows)}
+                    ${pool && toConcise(pool.totalDeposits - pool.totalBorrows)}
                   </Typography>
                 </Box>
                 <Box sx={{mr: 6}}>
                   <Typography variant="h6" color='secondary'>Total Borrows</Typography>
                   <Typography variant="h4" color='white'>
-                    ${pool && formatNumber(pool.totalDeposits)}
+                    ${pool && toConcise(pool.totalBorrows)}
                   </Typography>
                 </Box>
                 <Box sx={{mr: 6}}>
                   <Typography variant="h6" color='secondary'>Total Reserves</Typography>
                   <Typography variant="h4" color='white'>
-                    ${pool && formatNumber(pool.totalDeposits)}
+                    ${pool && toConcise(pool.totalDeposits)}
                   </Typography>
                 </Box>
                 <Box sx={{mr: 6}}>
                   <Typography variant="h6" color='secondary'>Collateralization</Typography>
                   <Typography variant="h4" color='white'>
-                    {pool && pool.totalDeposits != 0 ? formatNumber(pool.totalCollaterals / pool.totalDeposits) * 100 : '--'} %
+                    {pool && pool.totalBorrows != 0 && toFixed((pool.totalCollaterals * 10n ** 20n / pool.totalBorrows)) } %
                   </Typography>
                 </Box>
               </Box>

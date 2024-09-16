@@ -2,7 +2,7 @@ import {Box, Typography} from '@mui/material'
 import { useAccount } from "wagmi"
 import { useEffect, useState } from "react"
 import { getPositionInfo, getTokenPrice } from "src/contracts/pool"
-import { formatNumber, getTokenSymbol } from "src/wallet/utils"
+import { formatNumber, getTokenSymbol, toFixed } from "src/wallet/utils"
 import { Button } from "@mui/material"
 import SectionCard from "../SectionCard"
 
@@ -35,7 +35,7 @@ const Position = (props) => {
     if (!price || price == 0)
       return '--'
 
-    return isUSDMode? formatNumber(value) : (parseFloat(formatNumber(value)) / price).toFixed(2)
+    return isUSDMode? `$${toFixed(value)}` : (parseFloat(formatNumber(value)) / price).toFixed(2)
   }
 
   return (
@@ -93,7 +93,7 @@ const Position = (props) => {
           Available to Borrow
         </Typography>
         <Typography variant='h5'>
-          {getValueByMode(positionInfo?.availableToBorrow)}
+          {getValueByMode(positionInfo?.availableToBorrowValue)}
         </Typography>
       </Box>
     </SectionCard>

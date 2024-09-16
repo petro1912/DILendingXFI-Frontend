@@ -3,30 +3,47 @@ import {
   Button,
   Typography,
 } from '@mui/material'
+import { styled } from '@mui/material/styles'
 import { useRouter } from 'next/router'
 import Icon from 'src/@core/components/icon'
-import { ACTION_BORROW, ACTION_REPAY, formatNumber, getTokenImgName, getTokenSymbol } from 'src/wallet/utils'
+import { ACTION_BORROW, ACTION_REPAY, formatNumber, getTokenImgName, getTokenSymbol, toFixed } from 'src/wallet/utils'
+
+const InfoItem = styled(Box)(() => ({
+  marginTop: '6px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between'
+}))
+
+const ValueText = styled(Typography) (()=> ({
+  fontWeight: 'bold'
+}))
 
 const DebtPositionInfo = (props) => {
 
   const {
-    position,
     idx,
-    openModal
+    position,
+    openModal,
+    showAsToken
   } = props
 
   const {
     poolAddress,
     tokenAddress,
     borrowAmount,
+    borrowValue,
     collateralValue,
+    currentDebtAmount,
     currentDebtValue,
     liquidationPoint,
-    availableToBorrow
+    availableToBorrowAmount,
+    availableToBorrowValue
   } = position
 
   const router = useRouter()
   const isSummary = idx == 0
+  const showInUSD = isSummary || !showAsToken
 
   const goMarket = () => {
     router.push(`/markets/${getTokenSymbol(tokenAddress)}`)
@@ -60,28 +77,38 @@ const DebtPositionInfo = (props) => {
       <Box sx={{p: 3}}>
         <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
           <Typography>Borrows: </Typography>
-          <Typography sx={{ fontWeight: 'bold' }}>${formatNumber(borrowAmount)}</Typography>
+          <ValueText>
+            {!showInUSD? toFixed(borrowAmount) : `$${toFixed(borrowValue)}`}
+          </ValueText>
         </Box>
-        <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+        <InfoItem>
           <Typography>Collaterals: </Typography>
-          <Typography sx={{ fontWeight: 'bold' }}>${formatNumber(collateralValue)}</Typography>
-        </Box>
-        <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+          <ValueText>
+            ${toFixed(collateralValue)}
+          </ValueText>
+        </InfoItem>
+        <InfoItem>
           <Typography>Debt: </Typography>
-          <Typography sx={{ fontWeight: 'bold' }}>${formatNumber(currentDebtValue)}</Typography>
-        </Box>
-        <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+          <ValueText>
+            {!showInUSD? toFixed(currentDebtAmount) : `$${toFixed(currentDebtValue)}`}
+          </ValueText>
+        </InfoItem>
+        <InfoItem>
           <Typography>Liquidation Point: </Typography>
-          <Typography sx={{ fontWeight: 'bold' }}>${formatNumber(liquidationPoint)}</Typography>
-        </Box>
-        <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <ValueText>
+            ${toFixed(liquidationPoint)}
+          </ValueText>
+        </InfoItem>
+        <InfoItem>
           <Typography>Available to borrow: </Typography>
-          <Typography sx={{ fontWeight: 'bold' }}>${formatNumber(availableToBorrow)}</Typography>
-        </Box>
-        <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+          <ValueText>
+            {!showInUSD? toFixed(availableToBorrowAmount) : `$${toFixed(availableToBorrowValue)}`}
+          </ValueText>
+        </InfoItem>
+        <InfoItem>
           <Typography>Rewards: </Typography>
-          <Typography sx={{ fontWeight: 'bold' }}> USD</Typography>
-        </Box>
+          <ValueText> USD</ValueText>
+        </InfoItem>
 
       </Box>
       {

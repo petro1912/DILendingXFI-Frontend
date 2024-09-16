@@ -3,16 +3,29 @@ import {
   Button,
   Typography
 } from '@mui/material'
+import { styled } from '@mui/material/styles'
 import { useRouter } from 'next/router'
 import Icon from 'src/@core/components/icon'
-import { ACTION_SUPPLY, ACTION_SUPPLY_WITHDRAW, formatNumber, getTokenImgName, getTokenSymbol } from 'src/wallet/utils'
+import { ACTION_SUPPLY, ACTION_SUPPLY_WITHDRAW, formatNumber, getTokenImgName, getTokenSymbol, toFixed } from 'src/wallet/utils'
+
+const InfoItem = styled(Box)(() => ({
+  marginTop: '6px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between'
+}))
+
+const ValueText = styled(Typography) (()=> ({
+  fontWeight: 'bold'
+}))
 
 export const CreditPositionInfo = (props) => {
 
   const {
     idx,
     position,
-    openModal
+    openModal,
+    showAsToken
   } = props
 
   const {
@@ -21,11 +34,13 @@ export const CreditPositionInfo = (props) => {
     liquidityValue,
     cashAmount,
     cashValue,
-    earnedAmount
+    earnedAmount,
+    earnedValue
   } = position
 
   const router = useRouter()
   const isSummary = idx == 0
+  const showInUSD = isSummary || !showAsToken
 
   const goMarket = () => {
     router.push(`/markets/${getTokenSymbol(tokenAddress)}`)
@@ -55,22 +70,28 @@ export const CreditPositionInfo = (props) => {
         )
       }
       <Box sx={{p: 3}}>
-        <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+        <InfoItem>
           <Typography>Supply: </Typography>
-          <Typography sx={{ fontWeight: 'bold' }}>${formatNumber(liquidityAmount)}</Typography>
-        </Box>
-        <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+          <Typography sx={{ fontWeight: 'bold' }}>
+            {!showInUSD? toFixed(liquidityAmount) : `$${toFixed(liquidityValue)}`}
+          </Typography>
+        </InfoItem>
+        <InfoItem>
           <Typography>Credit: </Typography>
-          <Typography sx={{ fontWeight: 'bold' }}>${formatNumber(cashAmount)}</Typography>
-        </Box>
-        <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography sx={{ fontWeight: 'bold' }}>
+            {!showInUSD? toFixed(cashAmount) : `$${toFixed(cashValue)}`}
+          </Typography>
+        </InfoItem>
+        <InfoItem>
           <Typography>Earned: </Typography>
-          <Typography sx={{ fontWeight: 'bold' }}>${formatNumber(earnedAmount)}</Typography>
-        </Box>
-        <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography sx={{ fontWeight: 'bold' }}>
+            {!showInUSD? toFixed(earnedAmount) : `$${toFixed(earnedValue)}`}
+          </Typography>
+        </InfoItem>
+        <InfoItem>
           <Typography>Rewards: </Typography>
           <Typography sx={{ fontWeight: 'bold' }}>$</Typography>
-        </Box>
+        </InfoItem>
       </Box>
       {
         !isSummary &&

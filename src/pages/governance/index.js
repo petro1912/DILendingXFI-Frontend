@@ -45,7 +45,7 @@ const Governance = () => {
             Back to Home
           </Button>
         </BoxWrapper>
-        <Img height='400' alt='error-illustration' src='/images/pages/404.png' />
+        <Img height='300' alt='under-construction' src='/images/pages/under-construction.png' />
       </Box>
       <FooterIllustrations />
     </Box>

@@ -3,7 +3,10 @@ const ethers = require('ethers');
 const provider = new ethers.JsonRpcProvider('http://127.0.0.1:8545');
 
 const deployer_pk = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
-const test_user = "0xE782e833af67ACB035498A8ec983541e7E073D38"
+const test_users = [
+  "0xE782e833af67ACB035498A8ec983541e7E073D38",
+  "0xFd325dA557CC9fB1021D1070fA860dBA8aC94c63"
+]
 // const test_user = "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
 const oracle_address ="0xa513E6E4b8f2a923D98304ec87F64353C4D5C853"
 
@@ -23,11 +26,11 @@ const wallet = new ethers.Wallet(deployer_pk, provider);
 
 const contractABI = [
   'function mint(address,uint256)',
+  'function balanceOf(address owner) view returns (uint256)',
 ];
 
 const getGasPrice = async () => {
   const {gasPrice} = await provider.getFeeData();
-  console.log(gasPrice);
   return gasPrice + 100n;
 }
 
@@ -127,8 +130,24 @@ const setOraclePrice = async () => {
   }
 }
 
-mintTokens(test_user, 10000000)
-// sendNativeToken(test_user, 10)
+// await mintTokens(test_users[0], 20000000)
+// await mintTokens(test_users[1], 20000000)
+// sendNativeToken(test_users[0], 100)
+// sendNativeToken(test_users[1], 100)
 // setOraclePrice()
 // mintToken(TOKEN_ADDRESSES[0], test_user, 10000000)
 // mintToken(TOKEN_ADDRESSES[1], test_user, 10000000)
+
+
+
+const getTokenBalance = async (token_address, address) => {
+  const contract = new ethers.Contract(token_address, contractABI, provider);
+
+  const balance = await contract.balanceOf(address);
+  const formattedBalance = ethers.formatUnits(balance, 18)
+
+  console.log(formattedBalance)
+
+}
+
+getTokenBalance("0x0B306BF915C4d645ff596e518fAf3F9669b97016", "0x98A4C7323b01010d97F17fa4cdF326a3Ce560f2e")

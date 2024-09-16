@@ -1,4 +1,5 @@
 import {
+  Button,
   Grid, Typography,
 } from '@mui/material'
 import SectionCard from '../SectionCard'
@@ -13,6 +14,7 @@ const DebtPositions = (props) => {
 
   const {address, isConnected} = useAccount()
   const [positions, setPositions] = useState([])
+  const [showAsToken, setShowAsToken] = useState(true)
 
   const [action, setAction] = useState()
   const [actionPosition, setActionPosition] = useState({})
@@ -23,9 +25,24 @@ const DebtPositions = (props) => {
       getUserDebtPositions(address)
         .then(value => {
           if (value && value.length != 0) {
-            setPositions(value/*.filter(v => {
+            const filteredPositions = value/*.filter(v => {
               return v.collateralValue != 0n
-            })*/)
+            })*/
+
+            const summary = {
+              borrowValue: 0n,
+              collateralValue: 0n,
+              currentDebtValue: 0n,
+              availableToBorrowValue: 0n,
+            }
+
+            for (let position of filteredPositions) {
+              summary.borrowValue += position.borrowValue
+              summary.collateralValue += position.collateralValue
+              summary.currentDebtValue += position.currentDebtValue
+              summary.availableToBorrowValue += position.availableToBorrowValue
+            }
+            setPositions([summary, ...filteredPositions])
           }
 
         })
@@ -42,8 +59,17 @@ const DebtPositions = (props) => {
     setOpenDebtModal(false)
   }
 
+  const toggleMode = () => {
+    setShowAsToken(!showAsToken)
+  }
+
   return (
-    <SectionCard title="Borrow Positions">
+    <SectionCard title="Borrow Positions"
+      action={
+        <Button onClick={toggleMode}>
+          { showAsToken ? 'Token' : 'USD' }
+        </Button>
+      }>
       <Grid
         sx={{mt: 2}}
         container
@@ -55,6 +81,7 @@ const DebtPositions = (props) => {
             <Grid key={idx} item xs={12} sm={12} md={4}>
               <PositionCard isSummary={idx == 0}>
                 <DebtPositionInfo
+                  showAsToken={showAsToken}
                   openModal={openDialog}
                   position={position}
                   idx={idx}

@@ -10,7 +10,7 @@ import {
 import { styled } from '@mui/material/styles'
 import Icon from 'src/@core/components/icon'
 import CollateralDialog from '../../dialogs/CollateralDialog';
-import { formatNumber, getTokenImgName, getTokenName, getTokenSymbol } from 'src/wallet/utils';
+import { formatNumber, getTokenImgName, getTokenName, getTokenSymbol, toFixed } from 'src/wallet/utils';
 import { getCollateralTokens, getUserCollateralsInfo } from 'src/contracts/pool';
 import { useAccount, isConnected } from 'wagmi';
 import SectionCard from '../SectionCard';
@@ -116,8 +116,8 @@ const Collaterals = (props) => {
               </Box>
               <Box gap={3} sx={{ display: 'flex', alignItems: 'center', }}>
                 <Box>
-                  <Typography variant="h5" color={isConnected? 'white' : 'grey'}>
-                    {formatNumber(collateral.amount)}
+                  <Typography variant="h5" textAlign={'right'} color={isConnected? 'white' : 'grey'}>
+                    {toFixed(collateral.amount)}
                   </Typography>
                   {
                     collateral.value != 0n &&

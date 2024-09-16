@@ -27,7 +27,8 @@ export const calcStatistics = (pools) => {
   const _statistics = {
     totalDeposits: BigInt(0),
     totalBorrows: BigInt(0),
-    totalCollaterals: BigInt(0)
+    totalCollaterals: BigInt(0),
+    totalEarning: BigInt(0)
   }
   for (const pool of pools) {
     _statistics.totalDeposits += pool.totalDeposits
@@ -87,6 +88,52 @@ export const formatNumber = (bigNumberValue) => {
   return ethers.formatEther(bigNumberValue, 18);
 }
 
+export const toFloat = (bigNumberValue) => {
+  const number = formatNumber(bigNumberValue)
+  if (number == 0)
+    return 0
+
+  return parseFloat(number);
+}
+
+export const toFixed = (bigNumberValue) => {
+  let number = 0;
+  if (typeof bigNumberValue == 'bigint') {
+    const _number = formatNumber(bigNumberValue)
+    if (_number == 0)
+      return 0
+    number = parseFloat(_number)
+  } else {
+    if (!bigNumberValue)
+      return 0;
+    number = parseFloat(bigNumberValue)
+  }
+
+  return number.toLocaleString();
+}
+
+export const toConcise = (bigNumberValue) => {
+  let number = 0;
+  if (typeof bigNumberValue == 'bigint') {
+    const _number = formatNumber(bigNumberValue)
+    if (_number == 0)
+      return 0
+    number = parseFloat(_number)
+  } else {
+    number = parseFloat(bigNumberValue)
+  }
+
+  if (number < 1_000_000) {
+    if (number >= 1000) {
+      return (number / 1000).toFixed(2).replace(/\.00$/, '') + 'K';
+    }
+    return number.toLocaleString();
+  } else {
+    const millions = number / 1_000_000;
+    return millions.toFixed(2).replace(/\.00$/, '') + 'M';
+  }
+}
+
 export const formatNumber6 = (bigNumberValue) => {
   if (typeof bigNumberValue != 'bigint')
     return 0
@@ -102,7 +149,7 @@ export const formatPrice = (bigNumberValue) => {
 }
 
 export const formatPercent = (value) => {
-  return formatNumber(value) * 100
+  return parseFloat(formatNumber(value) * 100).toFixed(2)
 }
 
 export const isOnlyNumber = (value) => {
