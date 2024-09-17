@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography"
 import UnderlineInput from 'src/@core/components/UnderlineInput';
 import { Button, DialogActions } from "@mui/material"
 import { useEffect, useState } from "react"
-import { ACTION_BORROW, formatNumber, getTokenImgName, getTokenSymbol, isOnlyNumber } from "src/wallet/utils"
+import { ACTION_BORROW, formatNumber, getTokenImgName, getTokenSymbol, isOnlyNumber, toFixed, toFloat } from "src/wallet/utils"
 import { getTokenPrice, getTokenDecimals, getTokenValue } from "src/contracts/pool"
 import { useAccount } from "wagmi"
 import toast from "react-hot-toast"
@@ -81,12 +81,15 @@ const DebtDialog = (props) => {
 
   const getAvailableAmount = () => {
     return action == ACTION_BORROW ?
-      parseFloat(availableToBorrowAmount) :
-      parseFloat(formatNumber(currentDebtAmount))
+      toFloat(availableToBorrowAmount).toFixed(2) :
+      toFloat(currentDebtAmount).toFixed(2)
   }
 
   const setHalfAmount = () => {
-    setAmount(getAvailableAmount() / 2)
+    const halfAmount = action == ACTION_BORROW ?
+      toFloat(availableToBorrowAmount / 2n).toFixed(2) :
+      toFloat(currentDebtAmount / 2n).toFixed(2)
+    setAmount(halfAmount)
   }
 
   const setMaxAmount = () => {
@@ -174,15 +177,15 @@ const DebtDialog = (props) => {
               <Typography variant="h3">
                 {
                   action == ACTION_BORROW?
-                    formatNumber(availableToBorrowAmount):
-                    balance
+                    toFixed(availableToBorrowAmount):
+                    toFixed(balance)
                 }
               </Typography>
             </Box>
             <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'end'}}>
               <Typography color="grey" variant="h6">
                 ${
-                  formatNumber(
+                  toFixed(
                     action == ACTION_BORROW?
                       availableToBorrowValue :
                       value
@@ -223,11 +226,18 @@ const DebtDialog = (props) => {
         </Box>
 
         <Typography color="grey" sx={{textAlign: 'right'}}>
-          Available: {
+          {
             action == ACTION_BORROW ?
-              `${availableToBorrowAmount }` :
-              `${formatNumber(balance)}`
-            } {getTokenSymbol(tokenAddress)}
+            'Available: ' :
+            'Total Debt: '
+          }
+          {
+            action == ACTION_BORROW ?
+              `${toFixed(availableToBorrowAmount) }` :
+              `${toFixed(currentDebtAmount)}`
+          }
+          {' '}
+          {getTokenSymbol(tokenAddress)}
         </Typography>
 
       </Box>

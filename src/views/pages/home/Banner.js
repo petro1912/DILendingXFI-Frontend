@@ -21,9 +21,9 @@ const Banner = () => {
             <font color="#FF871F">Optimistic Rewards</font> to All Parties during Loans
           </Typography>
           <Typography variant="h4" color="secondary" sx={{mt: 4, lineHeight: '2rem'}}>
-            Invest Idle borrow and collateral assets <br/>
+            Invest Idle liquidity and collateral assets <br/>
             to support Staking/Farming and receive Extra Rewards. <br />
-            Enhance utilization and More revenue to Users on the Protocol.
+            Maximize utilization and More revenue to Users on the Protocol.
           </Typography>
           <Button variant='contained' sx={{ mt: 6, mb: 6 }}>
             Launch App

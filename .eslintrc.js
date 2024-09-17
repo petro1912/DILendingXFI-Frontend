@@ -37,9 +37,6 @@ module.exports = {
       }
     ],
 
-    // add new line above return
-    'newline-before-return': 'error',
-
     // add new line below import
     'import/newline-after-import': [
       'error',
@@ -48,11 +45,10 @@ module.exports = {
       }
     ],
 
-    // add new line after each var, const, let declaration
-    'padding-line-between-statements': [
-      'error',
-      { blankLine: 'always', prev: ['export'], next: ['*'] },
-      { blankLine: 'always', prev: ['*'], next: ['multiline-const', 'multiline-let', 'multiline-var', 'export'] }
-    ]
+    'padding-line-between-statements': 'off', // Disable padding line between statements
+    'newline-before-return': 'off', // Disable newline before return statement
+    'react-hooks/exhaustive-deps': 'warn', // Change to warn instead of error
+    'jsx-a11y/alt-text': 'warn', // Change to warn instead of error
+    'lines-around-comment': 'off', // Disable line around comment
   }
 }

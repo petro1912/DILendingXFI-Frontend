@@ -112,7 +112,9 @@ const HeaderBalance = (props) => {
         </Box>
         <Box>
           <Typography color="primary">Supply to Protocol</Typography>
-          <Typography variant="h3" textAlign="right">{creditPosition && toFixed(creditPosition.liquidityAmount)}</Typography>
+          <Typography variant="h3" textAlign="right">
+            {creditPosition && toFixed(creditPosition.liquidityAmount)}
+          </Typography>
         </Box>
       </Box>
       <Box sx={{
@@ -121,7 +123,7 @@ const HeaderBalance = (props) => {
         justifyContent: 'space-between'
         }}>
         <Typography>${props.pool && toFixed(toFloat(totalDeposits - totalBorrows) * tokenPrice)}</Typography>
-        <Typography>${props.pool && creditPosition && toFixed(creditPosition.liquidityAmount) * tokenPrice}</Typography>
+        <Typography>${props.pool && creditPosition && toFixed(toFloat(creditPosition.liquidityAmount) * tokenPrice)}</Typography>
       </Box>
     </Box>
   )

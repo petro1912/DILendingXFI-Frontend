@@ -5,7 +5,7 @@ import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 import { useEffect, useState } from 'react'
 import { TOKENS } from 'src/contracts/tokens'
-import { formatNumber, toConcise } from 'src/wallet/utils'
+import { formatNumber, formatPercent, toConcise } from 'src/wallet/utils'
 
 
 const CardMarket = (props) => {
@@ -38,16 +38,28 @@ const CardMarket = (props) => {
         </Typography>
         <Box sx={{ m: 2 }}>
           <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between'}}>
-            <Typography sx={{ color: '#00CFE8' }}>Market Size: </Typography>
-            <Typography sx={{ color: '#00CFE8', fontWeight: 'bold' }}>${toConcise(pool.totalDeposits)}</Typography>
+            <Typography color="primary">Market Size: </Typography>
+            <Typography color="primary" sx={{ fontWeight: 'bold' }}>${toConcise(pool.totalDeposits)}</Typography>
           </Box>
           <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between'}}>
-            <Typography sx={{ color: '#7367F0' }}>Total Borrows: </Typography>
-            <Typography sx={{ color: '#7367F0', fontWeight: 'bold' }}>${toConcise(pool.totalBorrows)}</Typography>
+            <Typography sx={{ }}>Total Borrows: </Typography>
+            <Typography sx={{ fontWeight: 'bold' }}>${toConcise(pool.totalBorrows)}</Typography>
           </Box>
           <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography sx={{ color: '#FF871F' }}>Available: </Typography>
-            <Typography sx={{ color: '#FF871F', fontWeight: 'bold' }}>${pool ? formatNumber(pool.totalDeposits - pool.totalBorrows) : '--' }</Typography>
+            <Typography sx={{ }}>Available: </Typography>
+            <Typography sx={{ fontWeight: 'bold' }}>${toConcise(pool.totalDeposits - pool.totalBorrows)}</Typography>
+          </Box>
+          <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Typography sx={{ }}>Utilization: </Typography>
+            <Typography sx={{ fontWeight: 'bold' }}>{formatPercent(pool.utilizationRate)}%</Typography>
+          </Box>
+          <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Typography sx={{ }}>Borrow Rate: </Typography>
+            <Typography sx={{ fontWeight: 'bold' }}>{formatPercent(pool.borrowAPR)}%</Typography>
+          </Box>
+          <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Typography sx={{ }}>Total Earnings: </Typography>
+            <Typography sx={{ fontWeight: 'bold' }}>${formatNumber(pool.totalEarnings)}</Typography>
           </Box>
           {/* <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
             <Typography sx={{ color: '#FF871F' }}>APR: </Typography>
