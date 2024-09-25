@@ -140,6 +140,15 @@ export const getUserCreditPositions = async (address) => {
   }
 }
 
+export const getUserCreditPosition = async (pool_address, address) => {
+  try {
+    const position = await poolContract(pool_address).getLiquidityPositionData(address);
+  return position;
+  } catch (error) {
+    console.error('Error calling view function:', error);
+  }
+}
+
 export const getUserDebtPositions = async (address) => {
   try {
     const positions = await factoryContract().getUserDebtPositions(address);

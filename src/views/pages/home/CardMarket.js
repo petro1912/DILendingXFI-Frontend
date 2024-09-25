@@ -5,7 +5,7 @@ import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 import { useEffect, useState } from 'react'
 import { TOKENS } from 'src/contracts/tokens'
-import { formatNumber, formatPercent, toConcise } from 'src/wallet/utils'
+import { formatNumber, formatPercent, toConcise, toFixed } from 'src/wallet/utils'
 
 
 const CardMarket = (props) => {
@@ -59,7 +59,7 @@ const CardMarket = (props) => {
           </Box>
           <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
             <Typography sx={{ }}>Total Earnings: </Typography>
-            <Typography sx={{ fontWeight: 'bold' }}>${formatNumber(pool.totalEarnings)}</Typography>
+            <Typography sx={{ fontWeight: 'bold' }}>${toFixed(pool.totalEarnings)}</Typography>
           </Box>
           {/* <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
             <Typography sx={{ color: '#FF871F' }}>APR: </Typography>

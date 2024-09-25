@@ -61,7 +61,18 @@ const Collaterals = (props) => {
 
       }
     }
-  }, [props.pool, address])
+  }, [props.pool, address, openCollateralModal])
+
+  useEffect(() => {
+    if (props.pool && props.pool.poolAddress && !openCollateralModal) {
+      if (address) {
+        getUserCollateralsInfo(props.pool.poolAddress, address)
+          .then(value => {
+            setCollateralsInfo(value)
+          })
+      }
+    }
+  }, [openCollateralModal])
 
   const showCollateralDialog = (collateral, action) => {
     setCollateralAction(action)
@@ -122,7 +133,7 @@ const Collaterals = (props) => {
                   {
                     collateral.value != 0n &&
                     <Typography variant="subtitle2" color={'grey'}>
-                      ${formatNumber(collateral.value)}
+                      ${toFixed(collateral.value)}
                     </Typography>
                   }
                 </Box>

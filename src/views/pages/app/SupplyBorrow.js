@@ -11,6 +11,7 @@ import { formatPercent, getTokenImgName, getTokenSymbol, isOnlyNumber, toFixed, 
 import toast from 'react-hot-toast'
 import { getTokenBalance, getTokenDecimals, getTokenPrice, getUserCollateralsInfo } from 'src/contracts/pool'
 import { borrowTransaction, supplyTransaction } from 'src/contracts/actions'
+import { LinearProgress } from '@mui/material'
 
 const SupplyBorrow = (props) => {
 
@@ -19,6 +20,7 @@ const SupplyBorrow = (props) => {
   const [price, setPrice] = useState()
   const [amount, setAmount] = useState('')
   const [collateralValue, setCollateralValue] = useState()
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (props.pool && address) {
@@ -28,7 +30,6 @@ const SupplyBorrow = (props) => {
             const collateralsInfo = value
             let _collateralValue = 0
             for (let collateral of collateralsInfo.collaterals) {
-              console.log( toFixed(collateral.value))
               _collateralValue += toFloat(collateral.value)
             }
             setCollateralValue(_collateralValue)
@@ -74,12 +75,21 @@ const SupplyBorrow = (props) => {
     const formatAmount = ethers.parseUnits(_amount.toString(), decimals)
     const formatCredit = ethers.parseUnits('0', decimals)
 
+    setLoading(true)
     supplyTransaction(poolAddress, principalToken, formatAmount, formatCredit)
       .then(res => {
-        console.log(res)
+        if (res == TransactionStateSent) {
+          toast.success("Transaction Success")
+        } else if (res == TransactionStateFailed) {
+          toast.error("Transaction Failed")
+        } else if (res == TransactionStateRejected) {
+          toast.error("Transaction Rejected")
+        }
+        setLoading(false)
       })
       .catch(error => {
-        console.log(error)
+        toast.error("Transaction Failed")
+        setLoading(false)
       })
 
   }
@@ -99,12 +109,21 @@ const SupplyBorrow = (props) => {
     const decimals = await getTokenDecimals(principalToken)
     const formatAmount = ethers.parseUnits(_amount.toString(), decimals)
 
+    setLoading(true)
     borrowTransaction(poolAddress, formatAmount)
       .then(res => {
-        console.log(res)
+        if (res == TransactionStateSent) {
+          toast.success("Transaction Success")
+        } else if (res == TransactionStateFailed) {
+          toast.error("Transaction Failed")
+        } else if (res == TransactionStateRejected) {
+          toast.error("Transaction Rejected")
+        }
+        setLoading(false)
       })
       .catch(error => {
-        console.log(error)
+        toast.error("Transaction Failed")
+        setLoading(false)
       })
   }
 
@@ -142,6 +161,8 @@ const SupplyBorrow = (props) => {
               fullWidth
               disabled={isWalletEmpty && isCollateralEmpty}
               />
+
+            <LinearProgress sx={{visibility: loading? 'visible' : 'hidden'}}/>
 
             <Typography color="grey" sx={{textAlign: 'right', my: 2}}>
               $ { amount && price ? (price * parseFloat (amount)).toFixed(2) : '0' }

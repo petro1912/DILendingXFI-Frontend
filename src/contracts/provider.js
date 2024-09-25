@@ -62,7 +62,12 @@ async function sendTransactionViaExtension(
     )
 
     if (receipt) {
-      return TransactionStateSent
+      const txReceipt = await browserExtensionProvider.waitForTransaction(receipt);
+      if (txReceipt && txReceipt.status === 1) {
+        return TransactionStateSent;
+      } else {
+        return TransactionStateFailed;
+      }
     } else {
       return TransactionStateFailed
     }

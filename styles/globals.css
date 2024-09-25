@@ -182,6 +182,14 @@ code[class*='language-'] {
   margin-right: 20px;
 }
 
+.feature-image {
+  width: 160px;
+  height: 160px;
+  padding: 20px;
+  border-radius: 40px;
+  border: 6px solid #00CFF8;
+}
+
 @keyframes loading {
   0% {
       width: 0;

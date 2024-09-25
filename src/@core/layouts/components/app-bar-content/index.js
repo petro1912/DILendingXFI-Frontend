@@ -92,6 +92,15 @@ const AppBarContent = props => {
             target='_blank'
             sx={{mr: 6}}
             component={LinkStyled}
+            href='/docs/marketing-doc.pdf'
+          >
+            Marketing
+          </Typography>
+          <Typography
+            variant='h5'
+            target='_blank'
+            sx={{mr: 6}}
+            component={LinkStyled}
             href='https://dilending.gitbook.io/di-lending'
           >
             Documentation

@@ -5,7 +5,7 @@ import Box from "@mui/material/Box"
 import Icon from 'src/@core/components/icon'
 import Typography from "@mui/material/Typography"
 import UnderlineInput from 'src/@core/components/UnderlineInput';
-import { Button, DialogActions } from "@mui/material"
+import { Button, CircularProgress, DialogActions, LinearProgress } from "@mui/material"
 import { useEffect, useState } from "react"
 import { ACTION_DEPOSIT, ACTION_WITHDRAW, formatNumber, getTokenImgName, getTokenSymbol, isOnlyNumber } from "src/wallet/utils"
 import { getTokenPrice, getTokenDecimals, getTokenValue } from "src/contracts/pool"
@@ -13,6 +13,7 @@ import { useAccount } from "wagmi"
 import toast from "react-hot-toast"
 import { ethers } from "ethers"
 import { depositTransaction, withdrawTransaction } from "src/contracts/actions"
+import { TransactionStateFailed, TransactionStateRejected, TransactionStateSent } from "src/contracts/provider"
 
 
 const CollateralDialog = (props) => {
@@ -22,6 +23,8 @@ const CollateralDialog = (props) => {
   const [balance, setBalance] = useState()
   const [price, setPrice] = useState()
   const [value, setValue] = useState()
+
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const { token } = props.token
@@ -94,19 +97,30 @@ const CollateralDialog = (props) => {
     const decimals = await getTokenDecimals(token)
     const formatAmount = ethers.parseUnits(_amount.toString(), decimals)
 
+    setLoading(true)
     depositTransaction(props.pool.poolAddress, token, formatAmount)
-      .then(res => {
-        console.log(res)
-      })
-      .catch(error => {
-        console.log(error)
-      })
+    .then(res => {
+      if (res == TransactionStateSent) {
+        toast.success("Transaction Success")
+      } else if (res == TransactionStateFailed) {
+        toast.error("Transaction Failed")
+      } else if (res == TransactionStateRejected) {
+        toast.error("Transaction Rejected")
+      }
+      setLoading(false)
+      handleClose()
+    })
+    .catch(error => {
+      toast.error("Transaction Failed")
+      setLoading(false)
+      handleClose()
+    })
 
   }
 
   const withdrawAction = async () => {
     const _amount = parseFloat(amount)
-    const _balance = parseFloat(balance)
+    const _balance = parseFloat(formatNumber(props.token.amount))
     if (!_amount || _amount > _balance) {
       toast.error("Amount should be non-zero and less than balance")
       return
@@ -116,12 +130,23 @@ const CollateralDialog = (props) => {
     const decimals = await getTokenDecimals(token)
     const formatAmount = ethers.parseUnits(_amount.toString(), decimals)
 
+    setLoading(true)
     withdrawTransaction(props.pool.poolAddress, token, formatAmount)
       .then(res => {
-        console.log(res)
+        if (res == TransactionStateSent) {
+          toast.success("Transaction Success")
+        } else if (res == TransactionStateFailed) {
+          toast.error("Transaction Failed")
+        } else if (res == TransactionStateRejected) {
+          toast.error("Transaction Rejected")
+        }
+        setLoading(false)
+        handleClose()
       })
       .catch(error => {
-        console.log(error)
+        toast.error("Transaction Failed")
+        setLoading(false)
+        handleClose()
       })
   }
 
@@ -198,6 +223,9 @@ const CollateralDialog = (props) => {
 
       </Box>
       <DialogActions>
+        {<Box sx={{mx: 2, visibility: loading? 'visible' : 'hidden'}}>
+          <CircularProgress size="30px"/>
+        </Box>}
         <Button
           onClick={handleAction}
           sx={{textTransform: 'capitalize'}}>

@@ -38,7 +38,8 @@ const DebtPositionInfo = (props) => {
     currentDebtValue,
     liquidationPoint,
     availableToBorrowAmount,
-    availableToBorrowValue
+    availableToBorrowValue,
+    rewards
   } = position
 
   const router = useRouter()
@@ -107,7 +108,7 @@ const DebtPositionInfo = (props) => {
         </InfoItem>
         <InfoItem>
           <Typography>Rewards: </Typography>
-          <ValueText> USD</ValueText>
+          <ValueText> {toFixed(rewards)} WETH</ValueText>
         </InfoItem>
 
       </Box>

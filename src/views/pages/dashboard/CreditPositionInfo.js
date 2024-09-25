@@ -90,7 +90,7 @@ export const CreditPositionInfo = (props) => {
         </InfoItem>
         <InfoItem>
           <Typography>Rewards: </Typography>
-          <Typography sx={{ fontWeight: 'bold' }}>$</Typography>
+          <Typography sx={{ fontWeight: 'bold' }}></Typography>
         </InfoItem>
       </Box>
       {

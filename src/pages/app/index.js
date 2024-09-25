@@ -15,7 +15,7 @@ import { FACTORY_ADDRESS } from "src/contracts/tokens"
 import ABI_FACTORY from 'src/contracts/artifacts/LendingPoolFactory.json'
 import { setPoolsInfo } from "src/redux/poolsSlice"
 import { createBrowserExtensionProvider } from 'src/contracts/provider';
-import { getUserCreditPositions } from 'src/contracts/pool';
+import { getUserCreditPosition } from 'src/contracts/pool';
 
 const App = () => {
 
@@ -24,7 +24,7 @@ const App = () => {
   const [pool, setPool] = useState()
   const {address, isConnected} = useAccount()
   const pools = useSelector((state) => state.pools.entities)
-  const [creditPositions, setCreditPositions] = useState([])
+  const [creditPosition, setCreditPosition] = useState([])
 
   const {data: pools_data} = useReadContract({
     address: FACTORY_ADDRESS,
@@ -44,18 +44,17 @@ const App = () => {
   useEffect(() => {
     if (pools && pools.length != 0) {
       setPool(pools[0])
-      if (address) {
-        getUserCreditPositions(address)
-          .then(value => {
-            if (value && value.length != 0) {
-              setCreditPositions(value)
-            }
-          })
-      }
     }
   }, [pools])
 
-  const creditPositionByPool = (poolAddress) => creditPositions && creditPositions.find(pos => pos.poolAddress == poolAddress)
+  useEffect(() => {
+    if (pool?.poolAddress && address) {
+      getUserCreditPosition(pool.poolAddress, address)
+        .then(value => {
+          setCreditPosition(value)
+        })
+    }
+  }, [pool])
 
 	return (
 		<>
@@ -69,7 +68,7 @@ const App = () => {
             pool && <HeaderBalance
               pool={pool}
               setPool={setPool}
-              creditPosition = {creditPositionByPool(pool?.poolAddress)}
+              creditPosition = {creditPosition}
             />
           }
 				</Box>
