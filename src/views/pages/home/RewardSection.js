@@ -6,13 +6,13 @@ const RewardSection = () => {
     <Box className="reward">
       <BoxContainer>
         <Box sx={{display:'flex', alignItems: 'center'}}>
-          <Typography variant="h1">0% <sup>APR</sup> + 0% <sup>APR</sup><br/> </Typography>
+          <Typography variant="h1">3.5% <sup>APR</sup> + 2.5% <sup>Rewards</sup><br/> </Typography>
           <img className="flameshot" src="/images/home/flameshot.png" />
         </Box>
         <Typography variant="h2">Interests & Rewards</Typography>
         <Typography variant="h5" color="secondary">
-          Contrary to popular belief, Lorem Ipsum is not simply random text. <br />
-          45 BC text is It has roots in a piece of classical Latin literature from 45 BC text is
+          Lenders earn interest from borrowers, revenue from idle liquidity and some revenue from collaterals <br />
+          Borrowers: main revenue from collaterals <br />
         </Typography>
       </BoxContainer>
     </Box>

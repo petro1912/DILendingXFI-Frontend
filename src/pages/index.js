@@ -61,8 +61,8 @@ const Home = () => {
                     boxShadow: 4,
                     borderRadius: 2,
                     // border: '1px solid #00CFE8',
-                    mx: 8,
-                    p: 3,
+                    mx: 6,
+                    p: 2,
                     color: 'common.white',
                     backgroundColor: '#00CFF822',
                     backdropFilter: 'blur(12px)'
@@ -74,7 +74,7 @@ const Home = () => {
                       <Typography variant='h2' color="primary" textAlign={'center'}>
                         Lock assets to Protocol
                       </Typography>
-                      <Typography variant='h6' sx={{pt: 3, lineHeight: 1.8, px: 6}}>
+                      <Typography variant='h5' sx={{pt: 3, lineHeight: 1.8, px: 6}}>
                         Lenders lock principal token to supply,
                         Borrowers deposit collateral token to borrow.<br />
                       </Typography>
@@ -89,8 +89,8 @@ const Home = () => {
                     boxShadow: 4,
                     borderRadius: 2,
                     // border: '1px solid #00CFE8',
-                    mx: 8,
-                    p: 3,
+                    mx: 6,
+                    p: 2,
                     color: 'common.white',
                     backgroundColor: '#00CFF822',
                     backdropFilter: 'blur(12px)'
@@ -102,7 +102,7 @@ const Home = () => {
                       <Typography variant='h2' color="primary" textAlign={'center'} sx={{px: 4}}>
                         Investment idle Assets
                       </Typography>
-                      <Typography variant='h6' sx={{pt: 3, lineHeight: 1.8, px: 6}}>
+                      <Typography variant='h5' sx={{pt: 3, lineHeight: 1.8, px: 4}}>
                         Determine idle liquidity and collateral assets to invest. <br />
                         Transfer Idle liquidity and collaterals to external revenue protocol
                       </Typography>
@@ -117,8 +117,8 @@ const Home = () => {
                     boxShadow: 4,
                     borderRadius: 2,
                     // border: '1px solid #00CFE8',
-                    mx: 8,
-                    p: 3,
+                    mx: 6,
+                    p: 2,
                     color: 'common.white',
                     backgroundColor: '#00CFF822',
                     backdropFilter: 'blur(12px)'
@@ -128,9 +128,9 @@ const Home = () => {
                         <img className="feature-image" src="/images/icons/distribution.png" />
                       </Box>
                       <Typography variant='h2' color="primary" textAlign={'center'}>
-                        Revenue Distribution
+                        Revenue <br/> Distribution
                       </Typography>
-                      <Typography variant='h6' sx={{pt: 3, lineHeight: 1.8, px: 6}}>
+                      <Typography variant='h5' sx={{pt: 3, lineHeight: 1.8, px: 4, textAlign: 'justify'}}>
                         Lenders: interest from borrowers, revenue from idle liquidity and some revenue from collaterals <br/>
                         Borrowers: main revenue from collaterals
                       </Typography>
